@@ -6,7 +6,27 @@ from nicegui import ui
 class input_view(ui.element):  # noqa: N801 this is the nicegui convention
     """The component which will display the user's input.
 
-    :param full_text: The original text displayed under the user's input. This can be changed later.
+    Usage:
+        First, in the page handler, create the view -- do NOT put this in a refreshable
+        method, as the constructor adds CSS and will duplicate stuff. The `full_text` argument is
+        the **original** text, the thing that the user needs to type -- the user's input starts empty.
+
+        Then, whenever your text updates, call `set_text` on the input view. This updates the
+        **user input** of the input view. If you need to change the background text for whatever
+        reason, use `set_original_text`.
+
+    Example:
+        ```python
+        @ui.page("/input")
+        def page():
+            state = State()
+            iv = input_view.input_view("The quick brown fox jumps over the lazy dog.")
+            def on_key(key):
+                state.text += key
+                iv.set_text(state.text)
+            input_method.on_key(on_key)
+        ```
+
     """
 
     CSS = """
@@ -76,15 +96,36 @@ class input_view(ui.element):  # noqa: N801 this is the nicegui convention
             cur_v ^= 1
 
     def set_original_text(self, value: str) -> None:
-        """Reset the background text (full_text)."""
+        """Reset the **background** text. You're probably looking for `set_text`.
+
+        Example:
+            ```python
+        # `text` is what the user is supposed to type.
+        def new_txt_selected_handler(text):
+            iv.set_original_text(text)
+            ...
+            ```
+
+        """
         self.full_text = value
         self.full_text_label.set_text(value)
 
     def set_text(self, value: str) -> None:
-        """Set the current input.
+        """Set the current **user** input -- what should be displayed in the foreground.
 
-        Sets the foreground value to the user's input, and adds some highlighting based on where
-        the user's input is right and wrong.
+        Additionally, it adds highlighting based on where the user types a correct character and
+        where the user types an incorrect character.
+
+        Example:
+                ```python
+        state = State()
+        def on_key(key):
+            state.text += key
+            iv.set_text(state.text)  # here
+            ...
+        input_method.on_key(on_key)
+                ```
+
         """
         self.text_input.clear()
         if value == "":
