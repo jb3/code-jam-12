@@ -11,7 +11,9 @@ readme = "README.md"
 # Target Python 3.12. If you decide to use a different version of Python
 # you will need to update this value.
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "nicegui~=2.22.2",
+]
 
 [dependency-groups]
 # This `dev` group contains all the development requirements for our linting toolchain.
