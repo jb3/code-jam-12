@@ -54,6 +54,12 @@ class Keyboard:
         self.position[1] = wrap_to_range(self.position[1] + y, 0, len(self.keys))
         self.render.refresh()
 
+    def send_selected(self) -> None:
+        """Send the selected character to the input view."""
+        print(
+            f"Selected {self.keys[self.position[1]][self.position[0]]!r}",
+        )  # TODO(GiGaGon): Add communication with input view once it exists
+
 
 @ui.page("/controller")
 def rpg_text_input_page() -> None:
@@ -75,5 +81,8 @@ def rpg_text_input_page() -> None:
         ):
             if e.key.code in key_codes:
                 keyboard.move(*direction)
+
+        if e.key.code in {"Space", "Enter"}:
+            keyboard.send_selected()
 
     ui.keyboard(on_key=handle_key)
