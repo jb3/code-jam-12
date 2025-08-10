@@ -26,7 +26,17 @@ def wrap_to_range(num: int, num_min: int, num_max: int) -> int:
 
 @dataclass
 class Keyboard:
-    """On-screen keyboard input method."""
+    r"""A RPG-style keyboard where characters are selected by navigating with wasd/the arror keys.
+
+    Positions are stored internally as (col, row).
+
+    In the default keys list, \N{Squared Ok} is intended for once typing is complete,
+    having to be pressed to complete the challenge.
+
+    Raises:
+        ValueError: If input keys is non-rectangular (jagged) or starting position is outside keys.
+
+    """
 
     keys: tuple[str, ...] = (
         "ABCDEFGabcdefg",
@@ -36,6 +46,25 @@ class Keyboard:
     )
 
     position: list[int] = field(default_factory=lambda: [0, 0])
+
+    def __post_init__(self) -> None:
+        if not self.keys:
+            msg = "Keyboard keys must not be empty."
+            raise ValueError(msg)
+        first_row_len = len(self.keys[0])
+        for row in self.keys[1:]:
+            if len(row) != first_row_len:
+                msg = (
+                    "All rows must be the same length, got"
+                    f" {row!r} with length {len(row)} while expecting {first_row_len}."
+                )
+                raise ValueError(msg)
+        if not (0 <= self.position[0] < len(self.keys[0])) or not (0 <= self.position[1] < len(self.keys)):
+            msg = (
+                f"Starting position {self.position} is outside bounds"
+                f" (0, 0) to ({len(self.keys[0]) - 1}, {len(self.keys) - 1})"
+            )
+            raise ValueError(msg)
 
     @ui.refreshable_method
     def render(self) -> None:
