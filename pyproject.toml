@@ -4,7 +4,12 @@
 name = "code-jam-template"
 description = "Add your description here"
 authors = [
-    { name = "Your Name" }
+    { name = "Mannyvv" },
+    { name = "afx8732" },
+    { name = "enskyeing" },
+    { name = "husseinhirani" },
+    { name = "jks85" },
+    { name = "MeGaGiGaGon" },
 ]
 version = "0.1.0"
 readme = "README.md"
