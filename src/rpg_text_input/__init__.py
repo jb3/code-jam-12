@@ -5,7 +5,7 @@ from nicegui.events import KeyEventArguments
 
 
 def wrap_to_range(num: int, num_min: int, num_max: int) -> int:
-    """Ensure num is in the half-open interval [min, max), wrapping as needed. Min must be less than max.
+    """Ensure num is in the half-open interval [min, max), wrapping as needed.
 
     Returns:
         The input num wrapped to the given range.
@@ -14,7 +14,7 @@ def wrap_to_range(num: int, num_min: int, num_max: int) -> int:
         ValueError: If min is greater than or equal to max.
 
     """
-    if num_min < num_max:
+    if num_min >= num_max:
         msg = f"Wrapping doesn't make sense if min >= max, got {num_min=} and {num_max=}."
         raise ValueError(msg)
     while num < num_min:
