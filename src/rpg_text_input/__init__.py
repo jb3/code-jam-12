@@ -30,9 +30,6 @@ class Keyboard:
 
     Positions are stored internally as (col, row).
 
-    In the default keys list, \N{Squared Ok} is intended for once typing is complete,
-    having to be pressed to complete the challenge.
-
     Raises:
         ValueError: If input keys is non-rectangular (jagged) or starting position is outside keys.
 
@@ -42,7 +39,7 @@ class Keyboard:
         "ABCDEFGabcdefg",
         "HIJKLMNhijklmn",
         "OPQRSTUopqrstu",
-        "VWXYZ. vwxyz,\N{SQUARED OK}",
+        "VWXYZ. vwxyz,\N{SYMBOL FOR BACKSPACE}",
     )
 
     position: list[int] = field(default_factory=lambda: [0, 0])
