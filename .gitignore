@@ -29,3 +29,7 @@ build/
 .vscode/
 # MacOS
 .DS_Store
+
+# Since uv is not required for the project and all dependancies are pinned,
+# ignore the lock file for the convenience of people using uv
+uv.lock
