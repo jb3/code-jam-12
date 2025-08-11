@@ -4,13 +4,16 @@ from nicegui import ui
 
 import input_method_proto
 import input_view
+import sample_input_method
 
 
-def get_input_method_by_name(inmth: str) -> type[input_method_proto.IInputMethod] | None:  # noqa: ARG001 temporary
+def get_input_method_by_name(inmth: str) -> type[input_method_proto.IInputMethod] | None:
     """Get an input method class by it's name.
 
     :returns: `type[IInputMethod]` on success, `None` on failure.
     """
+    if inmth == "sample":
+        return sample_input_method.SampleInputMethod
     return None
 
 
