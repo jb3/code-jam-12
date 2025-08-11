@@ -137,4 +137,5 @@ class input_view(ui.element):  # noqa: N801 this is the nicegui convention
         with self.text_input:
             for tok in parsed:
                 ui.label(tok[0]).classes("c" if tok[1] else "w")
-            ui.label("_").classes("cursor")
+            if len(value) < len(self.full_text):
+                ui.label("_").classes("cursor")
