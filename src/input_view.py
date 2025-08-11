@@ -74,6 +74,8 @@ class input_view(ui.element):  # noqa: N801 this is the nicegui convention
         with self:
             self.full_text_label = ui.label(full_text).classes("input-view-bg")
             self.text_input = ui.element().classes("input-view-fg")
+            with self.text_input:
+                ui.label("_").classes("cursor")
 
         self.full_text = full_text
         self.value = ""
