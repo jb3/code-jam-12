@@ -12,8 +12,8 @@ def main_page() -> None:
         ui.card().classes("w-[100vw] h-[50vh] flex justify-center items-center bg-sky-950"),
         ui.card().classes("no-shadow justify-center items-center"),
     ):
-        ui.label("Audio Editor Of The Future").classes("text-[48px]")
-        ui.label("Use an audio editor to test your typing skills").classes("text-[20px]")
+        ui.label("Terrible Typing").classes("text-[48px]")
+        ui.label("Test Your Typing Skills").classes("text-[20px]")
         ui.button("Go to Audio Editor", on_click=lambda: ui.navigate.to("/audio_editor"))
 
 
