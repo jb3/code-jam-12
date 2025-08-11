@@ -1,5 +1,7 @@
 from nicegui import ui
 
+import audio_style_input as _  # noqa: F401
+
 ui.label("Hello NiceGUI!")
 
 
