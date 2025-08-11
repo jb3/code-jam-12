@@ -33,13 +33,11 @@ $ py src/main.py
 
 # Contributing
 ## Setting up the project for development
-### Using `uv` (recommended)
-```
-$ uvx pre-commit install
-```
-
-### Without `uv`
 If you do not have `pre-commit` installed, see https://pre-commit.com/#installation
+
+You can also use `uvx pre-commit` to run `pre-commit` commands without permanently installing it.
+
+Once you have `pre-commit` installed, run this command to set up the commit hooks.
 ```
 $ pre-commit install
 ```
@@ -57,3 +55,4 @@ You can run the pre-commit checks locally with:
 ```
 $ pre-commit run -a
 ```
+If you installed the commit hook in the previous step, they should also be run locally on commits.
