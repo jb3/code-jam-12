@@ -31,20 +31,21 @@ class input_view(ui.element):  # noqa: N801 this is the nicegui convention
 
     CSS = """
 .input-view {
-    display: block;
-    position: relative;
     padding: 8px;
     border-radius: 5px;
     background-color: var(--q-dark);
     font-family: monospace;
     color: var(--q-secondary);
     word-break: break-all;
+    display: grid;
+}
+
+.input-view-bg {
+    grid-area: 1 / 1 / 2 / 2;
 }
 
 .input-view-fg {
-    position: absolute;
-    inset: 0;
-    margin: 8px;
+    grid-area: 1 / 1 / 2 / 2;
 }
 
 .input-view-fg div {
