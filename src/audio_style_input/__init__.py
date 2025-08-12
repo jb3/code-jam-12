@@ -1,12 +1,8 @@
 import asyncio
+from collections.abc import Callable
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 from nicegui import app, ui
-
-if TYPE_CHECKING:
-    from collections.abc import Callable
-
 
 import input_method_proto
 
@@ -168,3 +164,33 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
                 color="green",
                 on_click=self._select_letter_handler,
             )
+
+    def _select_letter_handler(self) -> None:
+        """Notify selected letter and trigger text update callback."""
+        letter = letters[self.current_letter_index_container[0] - 1]
+        ui.notify(f"You selected: {letter}")
+        self.select_letter(letter)
+
+    def start_audio_editor(self) -> None:
+        """Hide intro card and show main content."""
+        self.intro_card.style("display:none")
+        self.main_content.style("display:flex")
+
+    def on_text_update(self, callback: Callable[[str], None]) -> None:
+        """Register a callback to be called whenever the text updates.
+
+        Args:
+            callback (Callable[[str], None]): Function called with updated text.
+
+        """
+        self._text_update_callback = callback
+
+    def select_letter(self, letter: str) -> None:
+        """Call the registered callback with the selected letter.
+
+        Args:
+            letter (str): The letter selected by the user.
+
+        """
+        if self._text_update_callback:
+            self._text_update_callback(letter)
