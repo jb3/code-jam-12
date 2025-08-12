@@ -17,16 +17,11 @@ def home() -> None:
         font-weight: bold;
         text-align: center;
         font-size: 70px;
+    }
     .site-subtitle {
         font-family: Arial;
         text-align: center;
         font-size: 20px;
-    }
-    .page-div {
-        position: absolute;
-        left: 50%;
-        transform: translate(-50%);
-        top: 30px;
     }
     .heading {
         font-family: Arial;
@@ -44,6 +39,12 @@ def home() -> None:
     .input-grid {
         justify-content: center;
     }
+    .page-div {
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%);
+        top: 30px;
+    }
     ''')
 
     ui.query('body').style('background-color: #E9ECF5;')
@@ -52,7 +53,7 @@ def home() -> None:
         with ui.column(align_items="center").style('gap: 0px;'):
             ui.label(NAME).classes('site-title')
             ui.label(DESCRIPTION).classes('site-subtitle')
-    
+
     with ui.element('div').classes('page-div'):
         with ui.column(align_items="center").style("gap: 30px;"):
             ui.label("CHOOSE YOUR INPUT METHOD").classes('heading')
