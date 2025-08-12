@@ -4,7 +4,6 @@ NAME: str = "PLACEHOLDER NAME"
 DESCRIPTION: str = "Placeholder Description"
 
 
-@ui.page("/")
 def home() -> None:
     """Render the home page."""
     ui.add_css("""
