@@ -41,6 +41,9 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
         self.rewind_sound = ui.audio("/media/sounds/rewind.mp3").style("display:none")
         self.fast_forward_sound = ui.audio("/media/sounds/fast_forward.mp3").style("display:none")
 
+        self.setup_buttons()
+        self.start_button.on("click", self.start_audio_editor)
+
     def create_intro_card(self) -> tuple[ui.card, ui.button]:
         """Create the intro card with title and start button.
 
@@ -75,3 +78,16 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
             label = ui.label("Current letter: A")
             buttons_row = ui.row().style("gap: 10px")
         return main_content, record, label, buttons_row
+
+    def setup_buttons(self) -> None:
+        """Create UI buttons with their event handlers."""
+        with self.buttons_row:
+            ui.button("Play", color="#d18b2b", on_click=lambda: [self.main_track.play(), self.on_play()])
+            ui.button("Pause", color="#d18b2b", on_click=lambda: [self.main_track.pause(), self.on_pause()])
+            ui.button("Rewind 3 Seconds", color="#d18b2b", on_click=self.rewind_3)
+            ui.button("Forward 3 Seconds", color="#d18b2b", on_click=self.forward_3)
+            ui.button(
+                "Select Letter",
+                color="green",
+                on_click=self._select_letter_handler,
+            )
