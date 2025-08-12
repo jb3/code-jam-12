@@ -30,6 +30,9 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
         self.timer_task = None
         self.spin_task = None
 
+        self.intro_card, self.start_button = self.create_intro_card()
+        self.main_content, self.record, self.label, self.buttons_row = self.create_main_content()
+
         self.main_track = (
             ui.audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3")
             .props(remove="controls")
@@ -37,3 +40,38 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
         )
         self.rewind_sound = ui.audio("/media/sounds/rewind.mp3").style("display:none")
         self.fast_forward_sound = ui.audio("/media/sounds/fast_forward.mp3").style("display:none")
+
+    def create_intro_card(self) -> tuple[ui.card, ui.button]:
+        """Create the intro card with title and start button.
+
+        Returns:
+            tuple: (intro_card, start_button)
+
+        """
+        intro_card = ui.card().classes("w-[100vw] h-[50vh] flex justify-center items-center bg-[#d18b2b]")
+        with intro_card, ui.card().classes("no-shadow justify-center items-center"):
+            ui.label("WPM Battle: DJ Edition").classes("text-[86px]")
+            ui.label("Use an audio editor to test your typing skills").classes("text-[28px]")
+            start_button = ui.button("Get started!", color="#ff9900")
+        return intro_card, start_button
+
+    def create_main_content(self) -> tuple[ui.column, ui.image, ui.label, ui.row]:
+        """Create main content with record image, letter label, and button row.
+
+        Returns:
+            tuple: (main_content container, record image, label, buttons row)
+
+        """
+        main_content = ui.column().classes("items-center gap-4 #2b87d1").style("display:none")
+        with (
+            main_content,
+            ui.card().classes(
+                "gap-8 w-[100vw] h-[50vh] flex flex-col justify-center items-center bg-[#2b87d1]",
+            ),
+        ):
+            record = ui.image(
+                "/media/images/record.png",
+            ).style("width: 300px; transition: transform 0.05s linear;")
+            label = ui.label("Current letter: A")
+            buttons_row = ui.row().style("gap: 10px")
+        return main_content, record, label, buttons_row
