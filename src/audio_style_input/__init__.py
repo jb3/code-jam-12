@@ -1,3 +1,4 @@
+import asyncio
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -78,6 +79,82 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
             label = ui.label("Current letter: A")
             buttons_row = ui.row().style("gap: 10px")
         return main_content, record, label, buttons_row
+
+    async def spin_continuous(self) -> None:
+        """Continuously rotate the record image based on spin speed and direction."""
+        while True:
+            self.rotation_container[0] += self.spin_direction_container[0] * self.spin_speed_container[0]
+            self.record.style(f"transform: rotate({self.rotation_container[0]}deg);")
+            await asyncio.sleep(0.05)
+
+    async def letter_spinner_task(self) -> None:
+        """Continuously update the label with the current letter, cycling through letters."""
+        while True:
+            self.label.set_text(f"Current letter: {letters[self.current_letter_index_container[0]]}")
+            self.current_letter_index_container[0] = (self.current_letter_index_container[0] + 1) % len(letters)
+            await asyncio.sleep(0.5)
+
+    def start_spinning(self, *, clockwise: bool = True) -> None:
+        """Start spinning the record image.
+
+        Args:
+            clockwise (bool): Direction of spin; True for clockwise, False for counterclockwise.
+
+        """
+        self.spin_direction_container[0] = 1 if clockwise else -1
+        if self.spin_task is None or self.spin_task.done():
+            self.spin_task = asyncio.create_task(self.spin_continuous())
+
+    def stop_spinning(self) -> None:
+        """Stop spinning the record image."""
+        if self.spin_task:
+            self.spin_task.cancel()
+
+    async def speed_boost(self, final_direction: int = 1) -> None:
+        """Temporarily increase spin speed and then restore it.
+
+        Args:
+            final_direction (int): Direction to set after boost (1 or -1).
+
+        """
+        self.spin_speed_container[0] = self.boosted_spin_speed
+        await asyncio.sleep(1)
+        self.spin_speed_container[0] = self.normal_spin_speed
+        self.spin_direction_container[0] = final_direction
+
+    def on_play(self) -> None:
+        """Start letter spinner and spinning."""
+        if self.timer_task is None or self.timer_task.done():
+            self.timer_task = asyncio.create_task(self.letter_spinner_task())
+        self.start_spinning(clockwise=True)
+
+    def on_pause(self) -> None:
+        """Stop letter spinner and spinning."""
+        if self.timer_task:
+            self.timer_task.cancel()
+        self.stop_spinning()
+
+    def play_rewind_sound(self) -> None:
+        """Play rewind sound effect."""
+        self.rewind_sound.play()
+
+    def play_fast_forward_sound(self) -> None:
+        """Play fast forward sound effect."""
+        self.fast_forward_sound.play()
+
+    def forward_3(self) -> None:
+        """Skip forward 3 letters with sound and speed boost."""
+        self.current_letter_index_container[0] = (self.current_letter_index_container[0] + 3) % len(letters)
+        self.play_fast_forward_sound()
+        self.start_spinning(clockwise=True)
+        self._forward_3_task = asyncio.create_task(self.speed_boost(final_direction=1))
+
+    def rewind_3(self) -> None:
+        """Skip backward 3 letters with sound and speed boost."""
+        self.current_letter_index_container[0] = (self.current_letter_index_container[0] - 3) % len(letters)
+        self.play_rewind_sound()
+        self.start_spinning(clockwise=False)
+        self._speed_boost_task = asyncio.create_task(self.speed_boost(final_direction=1))
 
     def setup_buttons(self) -> None:
         """Create UI buttons with their event handlers."""
