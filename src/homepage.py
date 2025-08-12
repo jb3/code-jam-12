@@ -47,7 +47,7 @@ def home() -> None:
     }
     """)
 
-    ui.query("body").style("background-color: #E9ECF5;")
+    ui.query("body").style("background-color: #E9ECF5")
 
     with (
         ui.header().style("background-color: #20A39E").classes("items-center thick-header"),
