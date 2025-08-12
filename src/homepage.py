@@ -62,6 +62,3 @@ def home() -> None:
         with ui.row(align_items="center", wrap=False).style("gap: 50px;"):
             for i in range(4):
                 ui.button(text=f"Input method {i + 1}", color="#F9F9F9").classes("input-box")
-
-
-ui.run()
