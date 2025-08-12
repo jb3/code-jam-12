@@ -7,7 +7,7 @@ DESCRIPTION: str = "Placeholder Description"
 
 @ui.page('/')
 def home() -> None:
-    pass
+    ui.query('body').style('background-color: #E9ECF5;')
 
 
 ui.run()
