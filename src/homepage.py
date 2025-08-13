@@ -28,6 +28,7 @@ def home() -> None:
         font-weight: bold;
         text-align: center;
         color: #393D3F;
+        padding: 30px;
     }
     .input-box {
         height: 300px;
@@ -40,9 +41,17 @@ def home() -> None:
     }
     .page-div {
         position: absolute;
+        width: 90vw;
         left: 50%;
         transform: translate(-50%);
-        top: 30px;
+    }
+    .button-parent {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding-top: 30px;
+        padding-bottom: 60px;
     }
     """)
 
@@ -55,9 +64,9 @@ def home() -> None:
         ui.label(NAME).classes("site-title")
         ui.label(DESCRIPTION).classes("site-subtitle")
 
-    with ui.element("div").classes("page-div"), ui.column(align_items="center").style("gap: 30px;"):
+    with ui.element("div").classes("page-div"):
         ui.label("CHOOSE YOUR INPUT METHOD").classes("heading")
         ui.separator()
-        with ui.row(align_items="center", wrap=False).style("gap: 50px;"):
+        with ui.element("div").classes("button-parent"):
             for i in range(4):
                 ui.button(text=f"Input method {i + 1}", color="#F9F9F9").classes("input-box")
