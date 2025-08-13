@@ -49,7 +49,7 @@ def home() -> None:
     ui.query("body").style("background-color: #E9ECF5")
 
     with (
-        ui.header().style("background-color: #20A39E").classes("items-center thick-header"),
+        ui.header(fixed=False).style("background-color: #20A39E").classes("items-center thick-header"),
         ui.column(align_items="center").style("gap: 0px;"),
     ):
         ui.label(NAME).classes("site-title")
