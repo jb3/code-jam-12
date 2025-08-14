@@ -2,6 +2,7 @@ from nicegui import ui
 
 NAME: str = "PLACEHOLDER NAME"
 DESCRIPTION: str = "Placeholder Description"
+INPUT_METHOD_NAMES: list = ["Record Player", "WASD", "Color Picker", "Circle Selector"]
 
 
 def home() -> None:
@@ -68,5 +69,7 @@ def home() -> None:
         ui.label("CHOOSE YOUR INPUT METHOD").classes("heading")
         ui.separator()
         with ui.element("div").classes("button-parent"):
-            for i in range(4):
-                ui.button(text=f"Input method {i + 1}", color="#F9F9F9").classes("input-box")
+            ui.button(text=INPUT_METHOD_NAMES[0], color="#F9F9F9").classes("input-box")
+            ui.button(text=INPUT_METHOD_NAMES[1], color="#F9F9F9").classes("input-box")
+            ui.button(text=INPUT_METHOD_NAMES[2], color="#F9F9F9").classes("input-box")
+            ui.button(text=INPUT_METHOD_NAMES[3], color="#F9F9F9").classes("input-box")
