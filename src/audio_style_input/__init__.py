@@ -36,7 +36,7 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
         self.spin_task = None
 
         self.intro_card, self.start_button = self.create_intro_card()
-        self.main_content, self.record, self.label, self.buttons_row = self.create_main_content()
+        self.main_content, self.record, self.label, self.buttons_row, self.buttons_row_2 = self.create_main_content()
 
         self.main_track = (
             ui.audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3")
@@ -82,7 +82,8 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
             ).style("width: 300px; transition: transform 0.05s linear;")
             label = ui.label("Current letter: A")
             buttons_row = ui.row().style("gap: 10px")
-        return main_content, record, label, buttons_row
+            buttons_row_2 = ui.row().style("gap: 10x")
+        return main_content, record, label, buttons_row, buttons_row_2
 
     def cycle_char_select(self) -> None:
         """Select character set from Capital, Lower, and Special characters."""
@@ -181,14 +182,6 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
     def setup_buttons(self) -> None:
         """Create UI buttons with their event handlers."""
         with self.buttons_row, ui.button_group().classes("gap-1"):
-            ui.button(
-                "Play",
-                color="#2bd157",
-                icon="play_arrow",
-                on_click=lambda: [self.main_track.play(), self.on_play()],
-            )
-            ui.button("Eject", color="#d18b2b", icon="eject", on_click=self._delete_letter_handler)
-            ui.button("Record", color="red", icon="radio_button_checked", on_click=self._select_letter_handler)
             ui.button("Rewind 3 Seconds", color="#d18b2b", icon="fast_rewind", on_click=self.rewind_3)
             ui.button(
                 "Pause",
@@ -198,12 +191,22 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
             )
             ui.button("Forward 3 Seconds", color="#d18b2b", icon="fast_forward", on_click=self.forward_3)
             ui.button("Next Set of Chars", icon="skip_next", on_click=self.cycle_char_select)
+        with self.buttons_row_2, ui.button_group().classes("gap-1"):
+            ui.button(
+                "Play",
+                color="#2bd157",
+                icon="play_arrow",
+                on_click=lambda: [self.main_track.play(), self.on_play()],
+            )
+            ui.button("Eject", color="#d18b2b", icon="eject", on_click=self._delete_letter_handler)
+            ui.button("Record", color="red", icon="radio_button_checked", on_click=self._select_letter_handler)
+            ui.button("Mute", color="grey", icon="do_not_disturb", on_click=self._add_space_handler)
 
     def _select_letter_handler(self) -> None:
         """Notify selected letter and trigger text update callback."""
         char = self.current_chars_selected[self.current_letter_index_container[0] - 1]
         ui.notify(f"You selected: {char}")
-        self.select_letter(char)
+        self.select_char(char)
 
     def start_audio_editor(self) -> None:
         """Hide intro card and show main content."""
@@ -219,7 +222,7 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
         """
         self._text_update_callback = callback
 
-    def select_letter(self, char: str) -> None:
+    def select_char(self, char: str) -> None:
         """Call the registered callback with the selected letter.
 
         Args:
@@ -241,4 +244,13 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
            char(str): The code to delete last leter (back_space)
 
         """
-        self.select_letter(char)
+        self.select_char(char)
+
+    def _add_space_handler(self, char: str = " ") -> None:
+        """Add a space in user string thus far.
+
+        Args:
+         char(str): The space characer to add.
+
+        """
+        self.select_char(char)
