@@ -187,6 +187,7 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
                 icon="play_arrow",
                 on_click=lambda: [self.main_track.play(), self.on_play()],
             )
+            ui.button("Eject", color="#d18b2b", icon="eject", on_click=self._delete_letter_handler)
             ui.button("Record", color="red", icon="radio_button_checked", on_click=self._select_letter_handler)
             ui.button("Rewind 3 Seconds", color="#d18b2b", icon="fast_rewind", on_click=self.rewind_3)
             ui.button(
@@ -227,6 +228,17 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
         """
         if char != "back_space":
             self.user_text_container += char
+        else:
+            self.user_text_container = self.user_text_container[:-1]
 
         if self._text_update_callback:
             self._text_update_callback(self.user_text_container)
+
+    def _delete_letter_handler(self, char: str = "back_space") -> None:
+        """Delete the last letter in user string thus far.
+
+        Args:
+           char(str): The code to delete last leter (back_space)
+
+        """
+        self.select_letter(char)
