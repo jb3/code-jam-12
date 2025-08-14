@@ -12,6 +12,7 @@ ui.page("/test/{method}")(wpm_tester.wpm_tester_page)
 
 
 ui.page("/")(homepage.home)
+ui.page("/{method}")(wpm_tester.wpm_tester_page)  # works with homepage links
 
 
 ui.run()
