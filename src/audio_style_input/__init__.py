@@ -1,4 +1,5 @@
 import asyncio
+import string
 from collections.abc import Callable
 from pathlib import Path
 
@@ -9,7 +10,11 @@ import input_method_proto
 media = Path("./static")
 app.add_media_files("/media", media)
 
-letters = [chr(i) for i in range(ord("A"), ord("Z") + 1)]
+capital_letters = [chr(i) for i in range(ord("A"), ord("Z") + 1)]
+lowercase_letters = [chr(i) for i in range(ord("a"), ord("z") + 1)]
+special_chars = list(string.punctuation)
+
+char_selection = [capital_letters, lowercase_letters, special_chars]
 
 
 class AudioEditorComponent(input_method_proto.IInputMethod):
@@ -17,12 +22,15 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
 
     def __init__(self) -> None:
         self._text_update_callback: Callable[[str], None] | None = None
+        self.current_char_selection_index_container = [0]
+        self.current_chars_selected = char_selection[0]
         self.current_letter_index_container = [0]
         self.rotation_container = [0]
         self.normal_spin_speed = 5
         self.boosted_spin_speed = 10
         self.spin_speed_container = [self.normal_spin_speed]
         self.spin_direction_container = [1]
+        self.user_text_container = ""
 
         self.timer_task = None
         self.spin_task = None
@@ -76,6 +84,16 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
             buttons_row = ui.row().style("gap: 10px")
         return main_content, record, label, buttons_row
 
+    def cycle_char_select(self) -> None:
+        """Select character set from Capital, Lower, and Special characters."""
+        self.current_char_selection_index_container[0] = (self.current_char_selection_index_container[0] + 1) % len(
+            char_selection,
+        )
+        self.current_chars_selected = char_selection[self.current_char_selection_index_container[0]]
+        self.current_letter_index_container[0] = (self.current_letter_index_container[0] + 1) % len(
+            self.current_chars_selected,
+        )
+
     async def spin_continuous(self) -> None:
         """Continuously rotate the record image based on spin speed and direction."""
         while True:
@@ -86,8 +104,12 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
     async def letter_spinner_task(self) -> None:
         """Continuously update the label with the current letter, cycling through letters."""
         while True:
-            self.label.set_text(f"Current letter: {letters[self.current_letter_index_container[0]]}")
-            self.current_letter_index_container[0] = (self.current_letter_index_container[0] + 1) % len(letters)
+            self.label.set_text(
+                f"Current letter: {self.current_chars_selected[self.current_letter_index_container[0]]}",
+            )
+            self.current_letter_index_container[0] = (self.current_letter_index_container[0] + 1) % len(
+                self.current_chars_selected,
+            )
             await asyncio.sleep(0.5)
 
     def start_spinning(self, *, clockwise: bool = True) -> None:
@@ -140,36 +162,47 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
 
     def forward_3(self) -> None:
         """Skip forward 3 letters with sound and speed boost."""
-        self.current_letter_index_container[0] = (self.current_letter_index_container[0] + 3) % len(letters)
+        self.current_letter_index_container[0] = (self.current_letter_index_container[0] + 3) % len(
+            self.current_chars_selected,
+        )
         self.play_fast_forward_sound()
         self.start_spinning(clockwise=True)
         self._forward_3_task = asyncio.create_task(self.speed_boost(final_direction=1))
 
     def rewind_3(self) -> None:
         """Skip backward 3 letters with sound and speed boost."""
-        self.current_letter_index_container[0] = (self.current_letter_index_container[0] - 3) % len(letters)
+        self.current_letter_index_container[0] = (self.current_letter_index_container[0] - 3) % len(
+            self.current_chars_selected,
+        )
         self.play_rewind_sound()
         self.start_spinning(clockwise=False)
         self._speed_boost_task = asyncio.create_task(self.speed_boost(final_direction=1))
 
     def setup_buttons(self) -> None:
         """Create UI buttons with their event handlers."""
-        with self.buttons_row:
-            ui.button("Play", color="#d18b2b", on_click=lambda: [self.main_track.play(), self.on_play()])
-            ui.button("Pause", color="#d18b2b", on_click=lambda: [self.main_track.pause(), self.on_pause()])
-            ui.button("Rewind 3 Seconds", color="#d18b2b", on_click=self.rewind_3)
-            ui.button("Forward 3 Seconds", color="#d18b2b", on_click=self.forward_3)
+        with self.buttons_row, ui.button_group().classes("gap-1"):
             ui.button(
-                "Select Letter",
-                color="green",
-                on_click=self._select_letter_handler,
+                "Play",
+                color="#2bd157",
+                icon="play_arrow",
+                on_click=lambda: [self.main_track.play(), self.on_play()],
             )
+            ui.button("Record", color="red", icon="radio_button_checked", on_click=self._select_letter_handler)
+            ui.button("Rewind 3 Seconds", color="#d18b2b", icon="fast_rewind", on_click=self.rewind_3)
+            ui.button(
+                "Pause",
+                color="#d18b2b",
+                icon="pause",
+                on_click=lambda: [self.main_track.pause(), self.on_pause()],
+            )
+            ui.button("Forward 3 Seconds", color="#d18b2b", icon="fast_forward", on_click=self.forward_3)
+            ui.button("Next Set of Chars", icon="skip_next", on_click=self.cycle_char_select)
 
     def _select_letter_handler(self) -> None:
         """Notify selected letter and trigger text update callback."""
-        letter = letters[self.current_letter_index_container[0] - 1]
-        ui.notify(f"You selected: {letter}")
-        self.select_letter(letter)
+        char = self.current_chars_selected[self.current_letter_index_container[0] - 1]
+        ui.notify(f"You selected: {char}")
+        self.select_letter(char)
 
     def start_audio_editor(self) -> None:
         """Hide intro card and show main content."""
@@ -185,12 +218,15 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
         """
         self._text_update_callback = callback
 
-    def select_letter(self, letter: str) -> None:
+    def select_letter(self, char: str) -> None:
         """Call the registered callback with the selected letter.
 
         Args:
-            letter (str): The letter selected by the user.
+            char (str): The letter selected by the user.
 
         """
+        if char != "back_space":
+            self.user_text_container += char
+
         if self._text_update_callback:
-            self._text_update_callback(letter)
+            self._text_update_callback(self.user_text_container)
