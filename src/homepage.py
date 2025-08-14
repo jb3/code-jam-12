@@ -2,7 +2,12 @@ from nicegui import ui
 
 NAME: str = "PLACEHOLDER NAME"
 DESCRIPTION: str = "Placeholder Description"
-INPUT_METHOD_NAMES: list = ["Record Player", "WASD", "Color Picker", "Circle Selector"]
+INPUT_METHODS: list[tuple] = [
+    ("Record Player", "/record-player"),
+    ("WASD", "/wasd"),
+    ("Color Picker", "/color-picker"),
+    ("Circle Selector", "/circle-selector"),
+]  # Tuple(name, path)
 
 
 def home() -> None:
@@ -69,7 +74,7 @@ def home() -> None:
         ui.label("CHOOSE YOUR INPUT METHOD").classes("heading")
         ui.separator()
         with ui.element("div").classes("button-parent"):
-            ui.button(text=INPUT_METHOD_NAMES[0], color="#F9F9F9").classes("input-box")
-            ui.button(text=INPUT_METHOD_NAMES[1], color="#F9F9F9").classes("input-box")
-            ui.button(text=INPUT_METHOD_NAMES[2], color="#F9F9F9").classes("input-box")
-            ui.button(text=INPUT_METHOD_NAMES[3], color="#F9F9F9").classes("input-box")
+            ui.button(text=INPUT_METHODS[0][0], color="#F9F9F9").classes("input-box")
+            ui.button(text=INPUT_METHODS[1][0], color="#F9F9F9").classes("input-box")
+            ui.button(text=INPUT_METHODS[2][0], color="#F9F9F9").classes("input-box")
+            ui.button(text=INPUT_METHODS[3][0], color="#F9F9F9").classes("input-box")
