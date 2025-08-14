@@ -66,4 +66,6 @@ ignore = [
     "TD002",
     "TD003",
     "FIX",
+    # Conflicts with formatter.
+    "COM812",
 ]
