@@ -74,7 +74,23 @@ def home() -> None:
         ui.label("CHOOSE YOUR INPUT METHOD").classes("heading")
         ui.separator()
         with ui.element("div").classes("button-parent"):
-            ui.button(text=INPUT_METHODS[0][0], color="#F9F9F9").classes("input-box")
-            ui.button(text=INPUT_METHODS[1][0], color="#F9F9F9").classes("input-box")
-            ui.button(text=INPUT_METHODS[2][0], color="#F9F9F9").classes("input-box")
-            ui.button(text=INPUT_METHODS[3][0], color="#F9F9F9").classes("input-box")
+            ui.button(
+                text=INPUT_METHODS[0][0],
+                color="#F9F9F9",
+                on_click=lambda: ui.navigate.to(INPUT_METHODS[0][1]),
+            ).classes("input-box")
+            ui.button(
+                text=INPUT_METHODS[1][0],
+                color="#F9F9F9",
+                on_click=lambda: ui.navigate.to(INPUT_METHODS[1][1]),
+            ).classes("input-box")
+            ui.button(
+                text=INPUT_METHODS[2][0],
+                color="#F9F9F9",
+                on_click=lambda: ui.navigate.to(INPUT_METHODS[2][1]),
+            ).classes("input-box")
+            ui.button(
+                text=INPUT_METHODS[3][0],
+                color="#F9F9F9",
+                on_click=lambda: ui.navigate.to(INPUT_METHODS[3][1]),
+            ).classes("input-box")
