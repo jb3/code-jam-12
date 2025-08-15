@@ -114,9 +114,9 @@ class ColorInputManager:
             ui.label("Title text here?")
 
         with ui.left_drawer():
-            ui.label("Description or instructions here?")
-            ui.separator().props("color = black")
-            ui.switch("SHIFT", on_change=self.shift_handler)
+            ui.label("Special Keys:").style("font-weight:bold")
+            ui.separator().style("opacity:0")
+            ui.switch("CAPS LOCK", on_change=self.shift_handler)
             ui.separator().props("color = black")
 
             # creating wrappers to pass callback functions with parameters to buttons below
@@ -125,7 +125,8 @@ class ColorInputManager:
             callback_with_comma = partial(self.special_character_handler, ",")
             callback_with_question_mark = partial(self.special_character_handler, "?")
 
-            ui.label("Special Characters:")
+            ui.label("Special Characters:").style("font-weight:bold")
+            ui.separator().style("opacity:0")
             with ui.grid(columns=2):
                 ui.button(".", on_click=callback_with_period)
                 ui.button("!", on_click=callback_with_exclamation)
@@ -136,16 +137,12 @@ class ColorInputManager:
             ui.label("Something could go here also")
 
         # ui labels displaying selected color, last input character, and text typed by user
-        with ui.row():  # .classes('w-full border')
-            self.color_label.text = f"Selected Color: {self.selected_color}"
-            self.input_label.text = f"Previous Input: {self.typed_char}"
-            self.text_label.text = f"Typed Text: {self.typed_text}"
+        self.color_label.text = f"Selected Color: {self.selected_color}"
+        self.input_label.text = f"Previous Input: {self.typed_char}"
+        self.text_label.text = f"Typed Text: {self.typed_text}"
 
-        with ui.row(), ui.button(icon="colorize"):
-            # color picker currently disappears if user clicks outside of palette
-            # no-parent-event toggle does not fix this as it only applies to immediate parent not entire screen
-            # as is user can reopen color palette by pressing the button again
-            ui.color_picker(on_pick=self.color_handler, value=True)  # .props('no-parent-event')
+        with ui.row(), ui.button(icon="colorize").style("opacity:0;pointer-events:none"):
+            ui.color_picker(on_pick=self.color_handler, value=True).props("persistent")
 
         ui.run()
 
@@ -209,8 +206,3 @@ class ColorInputManager:
         blue_delta = color_tuple_1["blue"] - color_tuple_2["blue"]
 
         return round((red_delta**2 + green_delta**2 + blue_delta**2) ** 0.5, 2)
-
-
-# Create page using code below
-color_page = ColorInputManager()
-color_page.color_input_page()
