@@ -23,11 +23,14 @@ def input_method_page() -> None:
             font-weight: bold;
         }
     """)
+
     with ui.header(wrap=False).style("background-color: #20A39E").classes("items-center justify-between header"):
         with ui.card().props("flat"):  # small logo placeholder
             pass
         ui.label(NAME).classes("h1")
         ui.button(on_click=lambda: right_drawer.toggle(), icon="menu").props("flat color=white")
+
+    # Sidebar
     with (
         ui.right_drawer(
             value=False,
