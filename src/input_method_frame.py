@@ -34,9 +34,19 @@ def input_method_page() -> None:
             fixed=False,
         )
         .style("background-color: #ebf1fa")
-        .props("bordered overlay") as right_drawer
+        .props("overlay")
+        .classes("p-0") as right_drawer,
+        ui.element("q-scroll-area").classes("fit"),
     ):
-        ui.label("HOME")
+        with ui.list().classes("fit"), ui.item().props("clickable"), ui.item_section():
+            ui.label("HOME")
+        with ui.list().classes("fit"):
+            ui.separator()
+        with ui.list().classes("fit"):
+            with ui.item().props("clickable"), ui.item_section():
+                ui.label("RECORD PLAYER")
+            with ui.item().props("clickable"), ui.item_section():
+                ui.label("COLOR PICKER")
 
 
 ui.run()
