@@ -1,7 +1,6 @@
 from nicegui import ui
 
-NAME: str = "PLACEHOLDER NAME"
-DESCRIPTION: str = "Placeholder Description"
+from config import INPUT_METHODS, PROJECT_NAME
 
 
 @ui.page("/")
@@ -27,7 +26,7 @@ def input_method_page() -> None:
     with ui.header(wrap=False).style("background-color: #20A39E").classes("items-center justify-between header"):
         with ui.card().props("flat"):  # small logo placeholder
             pass
-        ui.label(NAME).classes("h1")
+        ui.label(PROJECT_NAME.upper()).classes("h1")
         ui.button(on_click=lambda: right_drawer.toggle(), icon="menu").props("flat color=white")
 
     # Sidebar
@@ -46,10 +45,9 @@ def input_method_page() -> None:
         with ui.list().classes("fit"):
             ui.separator()
         with ui.list().classes("fit"):
-            with ui.item().props("clickable"), ui.item_section():
-                ui.label("RECORD PLAYER")
-            with ui.item().props("clickable"), ui.item_section():
-                ui.label("COLOR PICKER")
+            for input in INPUT_METHODS:
+                with ui.item().props("clickable"), ui.item_section():
+                    ui.label(input["name"].upper())
 
 
 ui.run()
