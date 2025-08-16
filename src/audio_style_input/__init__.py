@@ -57,7 +57,7 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
             tuple: (intro_card, start_button)
 
         """
-        intro_card = ui.card().classes("w-[100vw] h-[50vh] flex justify-center items-center bg-[#d18b2b]")
+        intro_card = ui.card().classes("w-[100vw] h-[50vh] flex justify-center items-center bg-[#2b87d1]")
         with intro_card, ui.card().classes("no-shadow justify-center items-center"):
             ui.label("WPM Battle: DJ Edition").classes("text-[86px]")
             ui.label("Use an audio editor to test your typing skills").classes("text-[28px]")
@@ -75,7 +75,7 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
         with (
             main_content,
             ui.card().classes(
-                "gap-8 w-[100vw] h-[50vh] flex flex-col justify-center items-center bg-[#2b87d1]",
+                "gap-8 w-[100vw] h-[75vh] flex flex-col justify-center items-center bg-[#2b87d1]",
             ),
         ):
             record = ui.image(

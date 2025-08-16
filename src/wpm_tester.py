@@ -34,6 +34,8 @@ async def wpm_tester_page(method: str) -> None:
         the method from the url
     """
     state = WpmTesterPageState("")
+    timer_on = False
+    timer_container = None
 
     input_method_def = get_input_method_by_name(method)
     if input_method_def is None:
@@ -46,10 +48,23 @@ async def wpm_tester_page(method: str) -> None:
     # TODO: get og text from babbler module
     iv = input_view.input_view("the quick brown fox jumps over the lazy dog").classes("w-full")
 
+    timer_label = ui.label()
+
     input_method = input_method_def()
 
     def on_text_update(txt: str) -> None:
+        nonlocal timer_on, timer_container
+        if not timer_on:
+            timer_container = ui.timer(1, lambda: timer_label.set_text(iv.update_timer()))
+            timer_on = True
         iv.set_text(txt)
         state.text = txt
 
+    def stop_timer() -> None:
+        nonlocal timer_container
+        if timer_container:
+            timer_container.deactivate()
+
     input_method.on_text_update(on_text_update)
+
+    ui.on("disconnect", stop_timer)
