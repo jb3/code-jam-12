@@ -71,5 +71,5 @@ def home() -> None:
                 ui.button(
                     text=input["name"],
                     color="#F9F9F9",
-                    on_click=lambda _, path=input["path"]: ui.navigate.to(path),
+                    on_click=lambda _, path=f"/test/{input['path']}": ui.navigate.to(path),
                 ).classes("input-box")
