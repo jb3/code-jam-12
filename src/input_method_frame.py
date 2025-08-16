@@ -1,6 +1,6 @@
 from nicegui import ui
 
-from config import INPUT_METHODS, PROJECT_NAME
+from config import COLOR_STYLE, INPUT_METHODS, PROJECT_NAME
 
 
 @ui.page("/")
@@ -23,10 +23,16 @@ def input_method_page() -> None:
         }
     """)
 
-    with ui.header(wrap=False).style("background-color: #20A39E").classes("items-center justify-between header"):
+    ui.query("body").style(f"background-color: {COLOR_STYLE['primary_bg']}")
+
+    with (
+        ui.header(wrap=False)
+        .style(f"background-color: {COLOR_STYLE['secondary_bg']}")
+        .classes("items-center justify-between header")
+    ):
         with ui.card().props("flat"):  # small logo placeholder
             pass
-        ui.label(PROJECT_NAME.upper()).classes("h1")
+        ui.label(PROJECT_NAME.upper()).style(f"color: {COLOR_STYLE['primary']}").classes("h1")
         ui.button(on_click=lambda: right_drawer.toggle(), icon="menu").props("flat color=white")
 
     # Sidebar
@@ -35,7 +41,7 @@ def input_method_page() -> None:
             value=False,
             fixed=False,
         )
-        .style("background-color: #ebf1fa")
+        .style(f"background-color: {COLOR_STYLE['secondary_bg']}")
         .props("overlay")
         .classes("p-0") as right_drawer,
         ui.element("q-scroll-area").classes("fit"),
@@ -45,7 +51,7 @@ def input_method_page() -> None:
             ui.item(on_click=lambda: ui.navigate.to("/")).props("clickable"),
             ui.item_section(),
         ):
-            ui.label("HOME")
+            ui.label("HOME").style(f"color: {COLOR_STYLE['contrast']}")
         with ui.list().classes("fit"):
             ui.separator()
         with ui.list().classes("fit"):
@@ -54,7 +60,7 @@ def input_method_page() -> None:
                     ui.item(on_click=lambda _, path=f"/test/{input['path']}": ui.navigate.to(path)).props("clickable"),
                     ui.item_section(),
                 ):
-                    ui.label(input["name"].upper())
+                    ui.label(input["name"].upper()).style(f"color: {COLOR_STYLE['contrast']}")
 
 
 ui.run()
