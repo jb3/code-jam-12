@@ -46,8 +46,9 @@ INPUT_METHODS: list[InputMethodSpec] = [
 
 # COLORS
 COLOR_STYLE: dict[str, str] = {
-    "PRIMARY": "",
-    "SECONDARY": "",
-    "PRIMARY_BG": "",
-    "SECONDARY_BG": "",
+    "primary": "#048A81",
+    "secondary": "#7D53DE",
+    "primary_bg": "#111111",
+    "secondary_bg": "#1B1B1B",
+    "contrast": "#F9F9F9",
 }
