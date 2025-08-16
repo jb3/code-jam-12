@@ -1,13 +1,6 @@
 from nicegui import ui
 
-NAME: str = "PLACEHOLDER NAME"
-DESCRIPTION: str = "Placeholder Description"
-INPUT_METHODS: list[tuple] = [
-    ("Record Player", "/record-player"),
-    ("WASD", "/wasd"),
-    ("Color Picker", "/color-picker"),
-    ("Circle Selector", "/circle-selector"),
-]  # Tuple(name, path)
+from config import INPUT_METHODS, PROJECT_DESCRIPTION, PROJECT_NAME
 
 
 def home() -> None:
@@ -67,30 +60,16 @@ def home() -> None:
         ui.header(fixed=False).style("background-color: #20A39E").classes("items-center thick-header"),
         ui.column(align_items="center").style("gap: 0px;"),
     ):
-        ui.label(NAME).classes("site-title")
-        ui.label(DESCRIPTION).classes("site-subtitle")
+        ui.label(PROJECT_NAME).classes("site-title")
+        ui.label(PROJECT_DESCRIPTION).classes("site-subtitle")
 
     with ui.element("div").classes("page-div"):
         ui.label("CHOOSE YOUR INPUT METHOD").classes("heading")
         ui.separator()
         with ui.element("div").classes("button-parent"):
-            ui.button(
-                text=INPUT_METHODS[0][0],
-                color="#F9F9F9",
-                on_click=lambda: ui.navigate.to(INPUT_METHODS[0][1]),
-            ).classes("input-box")
-            ui.button(
-                text=INPUT_METHODS[1][0],
-                color="#F9F9F9",
-                on_click=lambda: ui.navigate.to(INPUT_METHODS[1][1]),
-            ).classes("input-box")
-            ui.button(
-                text=INPUT_METHODS[2][0],
-                color="#F9F9F9",
-                on_click=lambda: ui.navigate.to(INPUT_METHODS[2][1]),
-            ).classes("input-box")
-            ui.button(
-                text=INPUT_METHODS[3][0],
-                color="#F9F9F9",
-                on_click=lambda: ui.navigate.to(INPUT_METHODS[3][1]),
-            ).classes("input-box")
+            for input in INPUT_METHODS:
+                ui.button(
+                    text=input["name"],
+                    color="#F9F9F9",
+                    on_click=lambda _, path=input["path"]: ui.navigate.to(path),
+                ).classes("input-box")
