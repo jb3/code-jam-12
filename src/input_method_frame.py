@@ -46,7 +46,10 @@ def input_method_page() -> None:
             ui.separator()
         with ui.list().classes("fit"):
             for input in INPUT_METHODS:
-                with ui.item().props("clickable"), ui.item_section():
+                with (
+                    ui.item(on_click=lambda _, path=f"/test/{input['path']}": ui.navigate.to(path)).props("clickable"),
+                    ui.item_section(),
+                ):
                     ui.label(input["name"].upper())
 
 
