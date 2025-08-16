@@ -4,7 +4,8 @@ from nicegui import ui
 
 import input_method_proto
 import input_view
-import sample_input_method
+from audio_style_input import AudioEditorComponent
+from sample_input_method import SampleInputMethod
 
 
 def get_input_method_by_name(inmth: str) -> type[input_method_proto.IInputMethod] | None:
@@ -12,9 +13,9 @@ def get_input_method_by_name(inmth: str) -> type[input_method_proto.IInputMethod
 
     :returns: `type[IInputMethod]` on success, `None` on failure.
     """
-    if inmth == "sample":
-        return sample_input_method.SampleInputMethod
-    return None
+    input_method_dict = {"audio_input": AudioEditorComponent, "sample": SampleInputMethod}
+
+    return input_method_dict.get(inmth)
 
 
 @dataclass
