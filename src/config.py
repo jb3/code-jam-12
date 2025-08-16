@@ -5,7 +5,7 @@ PROJECT_DESCRIPTION: str = "How fast can you type?"
 INPUT_METHODS: list[dict] = [
     {
         "name": "Record Player",
-        "path": "/record-player",
+        "path": "/audio-input",
         "icon": "",
     },
     {
