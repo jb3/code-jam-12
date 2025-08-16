@@ -1,5 +1,4 @@
 from audio_style_input import AudioEditorComponent
-from rpg_text_input import rpg_text_input_page
 
 PROJECT_NAME: str = "Dynamic Typing"
 PROJECT_DESCRIPTION: str = "How fast can you type?"
@@ -16,19 +15,19 @@ INPUT_METHODS: list[dict] = [
         "name": "WASD",
         "path": "wasd",
         "icon": "",
-        "component": rpg_text_input_page,
+        "component": None,
     },
     {
         "name": "Color Picker",
         "path": "color-picker",
         "icon": "",
-        "component": "",
+        "component": None,
     },
     {
         "name": "Circle Selector",
         "path": "circle-selector",
         "icon": "",
-        "component": "",
+        "component": None,
     },
 ]
 
