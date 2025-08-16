@@ -8,25 +8,25 @@ PROJECT_DESCRIPTION: str = "How fast can you type?"
 INPUT_METHODS: list[dict] = [
     {
         "name": "Record Player",
-        "path": "/audio-input",
+        "path": "audio-input",
         "icon": "",
         "component": audio_style_input,
     },
     {
         "name": "WASD",
-        "path": "/wasd",
+        "path": "wasd",
         "icon": "",
         "component": rpg_text_input,
     },
     {
         "name": "Color Picker",
-        "path": "/color-picker",
+        "path": "color-picker",
         "icon": "",
         "component": "",
     },
     {
         "name": "Circle Selector",
-        "path": "/circle-selector",
+        "path": "circle-selector",
         "icon": "",
         "component": "",
     },
