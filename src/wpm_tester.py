@@ -17,8 +17,6 @@ def get_input_method_by_name(inmth: str) -> type[input_method_proto.IInputMethod
 
     return input_method_dict.get(inmth)
 
-    return None
-
 
 @dataclass
 class WpmTesterPageState:

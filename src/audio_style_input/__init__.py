@@ -25,6 +25,7 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
         self.current_char_selection_index_container = [0]
         self.current_chars_selected = char_selection[0]
         self.current_letter_index_container = [0]
+        self.play_pause_toggle = [False]
         self.rotation_container = [0]
         self.normal_spin_speed = 5
         self.boosted_spin_speed = 10
@@ -141,6 +142,21 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
         self.spin_speed_container[0] = self.normal_spin_speed
         self.spin_direction_container[0] = final_direction
 
+    def toggle_play_pause(self) -> None:
+        """Toggle play_pause state."""
+        self.play_pause_toggle[0] = not self.play_pause_toggle[0]
+        self.play_pause_handler()
+
+    def play_pause_handler(self) -> None:
+        """Play and puase the letter spinner and spinning."""
+        toggle = self.play_pause_toggle[0]
+
+        if toggle:
+            self.main_track.play()
+            self.on_play()
+        else:
+            self.main_track.pause(), self.on_pause()
+
     def on_play(self) -> None:
         """Start letter spinner and spinning."""
         if self.timer_task is None or self.timer_task.done():
@@ -183,20 +199,14 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
         """Create UI buttons with their event handlers."""
         with self.buttons_row, ui.button_group().classes("gap-1"):
             ui.button("Rewind 3 Seconds", color="#d18b2b", icon="fast_rewind", on_click=self.rewind_3)
-            ui.button(
-                "Pause",
-                color="#d18b2b",
-                icon="pause",
-                on_click=lambda: [self.main_track.pause(), self.on_pause()],
-            )
             ui.button("Forward 3 Seconds", color="#d18b2b", icon="fast_forward", on_click=self.forward_3)
             ui.button("Next Set of Chars", icon="skip_next", on_click=self.cycle_char_select)
         with self.buttons_row_2, ui.button_group().classes("gap-1"):
             ui.button(
-                "Play",
+                "Play/Pause",
                 color="#2bd157",
-                icon="play_arrow",
-                on_click=lambda: [self.main_track.play(), self.on_play()],
+                icon="not_started",
+                on_click=lambda: [self.toggle_play_pause()],
             )
             ui.button("Eject", color="#d18b2b", icon="eject", on_click=self._delete_letter_handler)
             ui.button("Record", color="red", icon="radio_button_checked", on_click=self._select_letter_handler)
@@ -234,6 +244,7 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
         else:
             self.user_text_container = self.user_text_container[:-1]
 
+        print("start!", self.user_text_container, "!end")
         if self._text_update_callback:
             self._text_update_callback(self.user_text_container)
 
