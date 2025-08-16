@@ -40,7 +40,11 @@ def input_method_page() -> None:
         .classes("p-0") as right_drawer,
         ui.element("q-scroll-area").classes("fit"),
     ):
-        with ui.list().classes("fit"), ui.item().props("clickable"), ui.item_section():
+        with (
+            ui.list().classes("fit"),
+            ui.item(on_click=lambda: ui.navigate.to("/")).props("clickable"),
+            ui.item_section(),
+        ):
             ui.label("HOME")
         with ui.list().classes("fit"):
             ui.separator()
