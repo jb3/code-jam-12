@@ -1,7 +1,6 @@
 from nicegui import ui
 
-NAME: str = "PLACEHOLDER NAME"
-DESCRIPTION: str = "Placeholder Description"
+from config import INPUT_METHODS, PROJECT_DESCRIPTION, PROJECT_NAME
 
 
 def home() -> None:
@@ -61,12 +60,16 @@ def home() -> None:
         ui.header(fixed=False).style("background-color: #20A39E").classes("items-center thick-header"),
         ui.column(align_items="center").style("gap: 0px;"),
     ):
-        ui.label(NAME).classes("site-title")
-        ui.label(DESCRIPTION).classes("site-subtitle")
+        ui.label(PROJECT_NAME).classes("site-title")
+        ui.label(PROJECT_DESCRIPTION).classes("site-subtitle")
 
     with ui.element("div").classes("page-div"):
         ui.label("CHOOSE YOUR INPUT METHOD").classes("heading")
         ui.separator()
         with ui.element("div").classes("button-parent"):
-            for i in range(4):
-                ui.button(text=f"Input method {i + 1}", color="#F9F9F9").classes("input-box")
+            for input in INPUT_METHODS:
+                ui.button(
+                    text=input["name"],
+                    color="#F9F9F9",
+                    on_click=lambda _, path=f"/test/{input['path']}": ui.navigate.to(path),
+                ).classes("input-box")
