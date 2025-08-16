@@ -244,7 +244,6 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
         else:
             self.user_text_container = self.user_text_container[:-1]
 
-        print("start!", self.user_text_container, "!end")
         if self._text_update_callback:
             self._text_update_callback(self.user_text_container)
 
