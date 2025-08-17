@@ -38,8 +38,7 @@ def input_method_page() -> None:
         }
     """)
 
-    ui.query("body").style(f"background-color: {COLOR_STYLE['primary_bg']};")
-
+    # Header
     with (
         ui.header(wrap=False)
         .style(f"background-color: {COLOR_STYLE['secondary_bg']}")
@@ -61,6 +60,7 @@ def input_method_page() -> None:
         .classes("p-0") as right_drawer,
         ui.element("q-scroll-area").classes("fit"),
     ):
+        # Home Button
         with (
             ui.list().classes("fit"),
             ui.item(on_click=lambda: ui.navigate.to("/"))
@@ -69,8 +69,11 @@ def input_method_page() -> None:
             ui.item_section(),
         ):
             ui.label("HOME").style(f"color: {COLOR_STYLE['contrast']}")
+
         with ui.list().classes("fit"), ui.column().classes("w-full items-center"):
             ui.separator().style("background-color: #313131; width: 95%;")
+
+        # Input method buttons
         with ui.list().classes("fit"):
             for input in INPUT_METHODS:
                 with (
@@ -80,6 +83,9 @@ def input_method_page() -> None:
                     ui.item_section(),
                 ):
                     ui.label(input["name"].upper()).style(f"color: {COLOR_STYLE['contrast']}")
+
+    # Main body
+    ui.query("body").style(f"background-color: {COLOR_STYLE['primary_bg']};")
 
     with ui.element("div").style(f"background-color: {COLOR_STYLE['secondary_bg']}").classes("input-method-container"):
         pass
