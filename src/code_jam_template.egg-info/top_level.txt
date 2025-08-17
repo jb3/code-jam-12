@@ -1,8 +1,0 @@
-audio_style_input
-homepage
-input_method_proto
-input_view
-main
-rpg_text_input
-sample_input_method
-wpm_tester
