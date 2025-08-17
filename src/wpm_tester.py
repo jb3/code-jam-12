@@ -34,20 +34,6 @@ class WpmTesterPageState:
 
 
 ui.add_css("""
-.input-method-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-    position: absolute;
-    width: 90vw;
-    height: 85vh;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 20px;
-}
-
 body {
     margin: 0;
     padding: 0;
@@ -159,10 +145,22 @@ async def wpm_tester_page(method: str) -> None:
 
     create_header()
 
+    # Main body
     ui.query("body").style(f"background-color: {COLOR_STYLE['primary_bg']};")
 
-    with ui.element("div").style(f"background-color: {COLOR_STYLE['secondary_bg']}").classes("input-method-container"):
-        iv = input_view.input_view(text_to_use).classes("w-full")
+    with (
+        ui.element("div")
+        .style(f"background-color: {COLOR_STYLE['secondary_bg']}")
+        .classes(
+            """flex flex-col justify-evenly items-center absolute w-[90vw] h-[85vh] left-1/2 top-1/2
+             transform -translate-x-1/2 -translate-y-1/2 rounded-xl"""
+        )
+    ):
+        # Sentence and timer div
+        with ui.element("div"):
+            iv = input_view.input_view(text_to_use).classes("w-full")
+            chip_package = create_time_chips()
 
-    chip_package = create_time_chips()
-    setup(method, text_to_use, state, chip_package, iv)
+        # Input method div
+        with ui.element("div"):
+            setup(method, text_to_use, state, chip_package, iv)
