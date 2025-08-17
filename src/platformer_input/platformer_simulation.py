@@ -27,7 +27,7 @@ class PlatformerPhysicsSimulation:
         self._yvel = 0
 
         self._deltatime = 0
-        self._last_tick_at = time.perf_counter()
+        self._last_tick_at = 0
 
         self._keys = set()
         # turn into mask for efficient access
@@ -42,6 +42,8 @@ class PlatformerPhysicsSimulation:
     def tick(self) -> None:
         """Run a tick of the simulation."""
         current_time = time.perf_counter()
+        if self._last_tick_at == 0:
+            self._last_tick_at = current_time
         self._deltatime = current_time - self._last_tick_at
         self._last_tick_at = current_time
 
