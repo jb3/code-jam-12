@@ -9,6 +9,7 @@ from platformer_input.platformer_simulation import PlatformerPhysicsSimulation
 
 ALLOWED_KEYS = ("ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Shift", " ", "Enter")
 INITIAL_POS = (0, 10)
+FPS = 15
 
 
 class PlatformerInputMethod(input_method_proto.IInputMethod):
@@ -24,19 +25,15 @@ class PlatformerInputMethod(input_method_proto.IInputMethod):
 
     def __init__(self) -> None:
         self.callbacks = []
-        self.inp = PlatformerSceneComponent(INITIAL_POS)
+        self.scene = PlatformerSceneComponent(INITIAL_POS)
         self.physics = PlatformerPhysicsSimulation(INITIAL_POS)
         self.held_keys = set()
         ui.keyboard(lambda e: self.keyboard_handler(e))
+        ui.timer(1 / FPS, lambda: self._hinterv())
 
     def keyboard_handler(self, event: nicegui.events.KeyEventArguments) -> None:
         """Call with the nicegui keyboard callback."""
         evk = str(event.key)
-        if evk == "Enter" and event.action.keyup and not event.action.repeat:
-            self.physics.tick()
-            self.inp.draw_scene(self.physics.player_x, self.physics.player_y)
-            return
-
         if event.action.repeat or evk not in ALLOWED_KEYS:
             return
 
@@ -45,6 +42,11 @@ class PlatformerInputMethod(input_method_proto.IInputMethod):
         elif event.action.keyup and evk in self.held_keys:
             self.held_keys.remove(evk)
         self.physics.set_held_keys(self.held_keys)
+
+    def _hinterv(self) -> None:
+        """Run every game tick."""
+        self.physics.tick()
+        self.scene.draw_scene(self.physics.player_x, self.physics.player_y)
 
     def on_text_update(self, callback: typing.Callable[[str], None]) -> None:
         """Call `callback` every time the user input changes."""
