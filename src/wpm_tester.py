@@ -34,7 +34,7 @@ class WpmTesterPageState:
 
 
 def create_header() -> None:
-    """Create header label."""
+    """Create header and sidebar."""
     with (
         ui.header(wrap=False)
         .style(f"background-color: {COLOR_STYLE['secondary_bg']}")
