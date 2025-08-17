@@ -33,20 +33,6 @@ class WpmTesterPageState:
     text: str
 
 
-ui.add_css("""
-body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
-}
-
-.item-hover:hover {
-    background-color: #313131;
-}
-""")
-
-
 def create_header() -> None:
     """Create header label."""
     with (
