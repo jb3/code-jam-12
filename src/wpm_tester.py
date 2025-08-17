@@ -51,9 +51,9 @@ async def wpm_tester_page(method: str) -> None:
     text_to_use = "the quick brown fox jumps over the lazy dog"
     iv = input_view.input_view(text_to_use).classes("w-full")
     with ui.row().classes("w-full justify-center items-center gap-4"):
-        timer_label = ui.button("Timer: 0:00", color="#00FF00")
-        wpm_label = ui.button("WPM: --", color="#e5e5e5")
-        wph_label = ui.button("WPH: --", color="#e5e5e5")
+        timer_label = ui.chip("TIMER: 0:00", color="#6AC251", icon="timer")
+        wpm_label = ui.chip("WPM: --", color="#e5e5e5", icon="watch")
+        wph_label = ui.chip("WPH: --", color="#e5e5e5", icon="hourglass_top")
 
     input_method = input_method_def()
 
