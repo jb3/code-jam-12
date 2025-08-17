@@ -157,10 +157,10 @@ async def wpm_tester_page(method: str) -> None:
         )
     ):
         # Sentence and timer div
-        with ui.element("div"):
+        with ui.element("div").classes("flex items-center w-full h-1/4 p-5"):
             iv = input_view.input_view(text_to_use).classes("w-full")
             chip_package = create_time_chips()
 
         # Input method div
-        with ui.element("div"):
+        with ui.element("div").classes("align-items w-full h-3/4"):
             setup(method, text_to_use, state, chip_package, iv)
