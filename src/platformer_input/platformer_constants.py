@@ -10,7 +10,12 @@ SCENE_HEIGHT = 30
 TILE_SIZE_ML = 3
 
 JUMP_FORCE = 5
+"""Max player speed."""
 MOV_SPEED = 10
+"""How fast the player accelerates."""
+ACCEL_SPEED = 15
+"""Essentially friction simulation"""
+VELOCITY_DECAY_RATE = 0.8
 
 COLOR_BG = "skyblue"
 COLOR_PLAYER = "purple"

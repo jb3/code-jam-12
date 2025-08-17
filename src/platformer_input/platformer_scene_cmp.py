@@ -26,13 +26,13 @@ class PlatformerSceneComponent(ui.element):
 
         self.draw_scene(*position)
 
-    def draw_scene(self, player_x: int, player_y: int) -> None:
+    def draw_scene(self, player_x: float, player_y: float) -> None:
         """Draw the scene, player, etc."""
         self.e.clear()
         with self.e:
             self._dynctx_draw_scene((player_x, player_y))
 
-    def _dynctx_draw_scene(self, player_pos: tuple[int, int]) -> None:
+    def _dynctx_draw_scene(self, player_pos: tuple[float, float]) -> None:
         """Draws a scene in any context."""
         xv_min = player_pos[0] - (c.SCENE_WIDTH / c.TILE_SIZE_ML) / 2
         xv_max = player_pos[0] + (c.SCENE_WIDTH / c.TILE_SIZE_ML) / 2
@@ -61,7 +61,7 @@ class PlatformerSceneComponent(ui.element):
 
         self._sc_create_sq_tile(player_x, player_y, c.COLOR_PLAYER)
 
-    def _sc_create_sq_tile(self, x: int, y: int, col: str) -> None:
+    def _sc_create_sq_tile(self, x: float, y: float, col: str) -> None:
         """Draw a full-color tile onto the scene."""
         for offset_x in range(c.TILE_SIZE_ML):
             for offset_y in range(c.TILE_SIZE_ML):
