@@ -51,6 +51,9 @@ async def wpm_tester_page(method: str) -> None:
             font-weight: bold;
         }
         .input-method-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
             position: absolute;
             width: 90vw;
             height: 85vh;
@@ -117,8 +120,9 @@ async def wpm_tester_page(method: str) -> None:
     ui.query("body").style(f"background-color: {COLOR_STYLE['primary_bg']};")
 
     with (
-        ui.element("div").style(f"background-color: {COLOR_STYLE['secondary_bg']}").classes("input-method-container"),
-        ui.column().classes("w-full items-center p-5 gap-4"),
+        ui.element("div")
+        .style(f"background-color: {COLOR_STYLE['secondary_bg']}")
+        .classes("input-method-container items-center")
     ):
         # Sentence & timer div
         with ui.element("div"):
