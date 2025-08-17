@@ -21,7 +21,6 @@ class PlatformerPhysicsSimulation:
 
     def tick(self) -> None:
         """Run a tick of the simulation."""
-        print(self.player_x, self.player_y)
         if "ArrowRight" in self._keys:
             self.player_x += 1
         if "ArrowLeft" in self._keys:
