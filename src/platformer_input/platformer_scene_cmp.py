@@ -34,8 +34,17 @@ class PlatformerSceneComponent(ui.element):
 
     def _dynctx_draw_scene(self, player_pos: tuple[int, int]) -> None:
         """Draws a scene in any context."""
+        xv_min = player_pos[0] - (c.SCENE_WIDTH / c.TILE_SIZE_ML) / 2
+        xv_max = player_pos[0] + (c.SCENE_WIDTH / c.TILE_SIZE_ML) / 2
+        yv_min = player_pos[1] - self.player_center_y_offset / c.TILE_SIZE_ML
+        yv_max = player_pos[1] + 2
+
         for ypos, row in enumerate(self.world):
+            if not (yv_min <= ypos < yv_max):
+                continue
             for xpos, cell in enumerate(row):
+                if not (xv_min < xpos < xv_max):
+                    continue
                 if cell == " ":
                     continue
 
