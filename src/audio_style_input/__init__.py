@@ -10,11 +10,7 @@ import input_method_proto
 media = Path("./static")
 app.add_media_files("/media", media)
 
-capital_letters = [chr(i) for i in range(ord("A"), ord("Z") + 1)]
-lowercase_letters = [chr(i) for i in range(ord("a"), ord("z") + 1)]
-special_chars = list(string.punctuation)
-
-char_selection = [capital_letters, lowercase_letters, special_chars]
+char_selection = [string.ascii_uppercase, string.ascii_lowercase, string.punctuation]
 
 
 class AudioEditorComponent(input_method_proto.IInputMethod):
