@@ -31,8 +31,6 @@ class PlatformerPhysicsSimulation:
         if "ArrowDown" in self._keys:
             self.player_y += 1
 
-        print(self.player_x, self.player_y)
-
     def _collide(self, world: tuple[int, int]) -> bool:
         """Check if a target cell contains a wall."""
         return self._world[world[1]][world[0]] == "#"
