@@ -1,4 +1,5 @@
 from audio_style_input import AudioEditorComponent
+from platformer_input import PlatformerInputMethod
 
 PROJECT_NAME: str = "Dynamic Typing"
 PROJECT_DESCRIPTION: str = "How fast can you type?"
@@ -29,6 +30,7 @@ INPUT_METHODS: list[dict] = [
         "icon": "",
         "component": None,
     },
+    {"name": "Platformer", "path": "platformer", "icon": "", "component": PlatformerInputMethod},
 ]
 
 # COLORS
