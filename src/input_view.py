@@ -85,13 +85,12 @@ class input_view(ui.element):  # noqa: N801 this is the nicegui convention
 
     def update_timer(self) -> str:
         """Update timer to get min and secs."""
-        print(f"{self.minutes:02d}:{self.seconds:02d}", end="\r")
         self.seconds += 1
         seconds_60 = 60
         if self.seconds == seconds_60:
             self.seconds = 0
             self.minutes += 1
-        return f"{self.minutes:02d}:{self.seconds:02d}"
+        return f"TIMER: {self.minutes:02d}:{self.seconds:02d}"
 
     def _parse_text(self, user_text: str) -> Iterator[tuple[str, bool]]:
         """Get a token list of string slices and whether they are correct."""
