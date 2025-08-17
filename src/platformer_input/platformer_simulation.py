@@ -51,10 +51,8 @@ class PlatformerPhysicsSimulation:
             self._xvel = min(constants.MOV_SPEED, self._xvel + delta_accel)
         if "ArrowLeft" in self._keys:
             self._xvel = max(-constants.MOV_SPEED, self._xvel - delta_accel)
-        if "ArrowUp" in self._keys:
-            self._yvel = max(-constants.MOV_SPEED, self._yvel - delta_accel)
-        if "ArrowDown" in self._keys:
-            self._yvel = min(constants.MOV_SPEED, self._yvel + delta_accel)
+        if "ArrowUp" in self._keys and self._collide((self.player_x, self.player_y + 2 * EPSILON)):
+            self._yvel = -constants.JUMP_FORCE
 
         self.player_x += self._xvel
 

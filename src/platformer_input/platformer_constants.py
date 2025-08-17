@@ -7,7 +7,7 @@ SCENE_WIDTH = 16
 """Height in tiles of the whole scene."""
 SCENE_HEIGHT = 9
 
-JUMP_FORCE = 2
+JUMP_FORCE = 12
 """Max player speed."""
 MOV_SPEED = 2
 """How fast the player accelerates."""
