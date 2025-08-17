@@ -1,5 +1,6 @@
 import math
 import time
+import typing
 
 import platformer_input.platformer_constants as constants
 
@@ -19,7 +20,8 @@ class PlatformerPhysicsSimulation:
     _last_tick_at: float
 
     _keys: set[str]
-    _world: list[list[bool]]
+    # 0: air, 1: block, 2: letter
+    _world: list[list[typing.Literal[0, 1, 2]]]
 
     def __init__(self, initial: tuple[int, int]) -> None:
         self.player_x, self.player_y = initial
@@ -33,7 +35,7 @@ class PlatformerPhysicsSimulation:
         # turn into mask for efficient access
         self._world = []
         world = constants.world_grid()
-        self._world = [[cell == "#" for cell in row] for row in world]
+        self._world = [[0 if cell == " " else 1 if cell == "#" else 2 for cell in row] for row in world]
 
     def set_held_keys(self, keys: set[str]) -> None:
         """Set the current player-held keys."""
@@ -112,6 +114,6 @@ class PlatformerPhysicsSimulation:
                 in_map = 0 <= tile_y < len(self._world) and 0 <= tile_x < len(self._world[0])
                 if not in_map:
                     continue
-                if self._world[tile_y][tile_x]:
+                if self._world[tile_y][tile_x] > 0:
                     return True
         return False
