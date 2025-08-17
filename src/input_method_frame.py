@@ -21,9 +21,24 @@ def input_method_page() -> None:
             font-size: 35px;
             font-weight: bold;
         }
+        .input-method-container {
+            position: absolute;
+            width: 90vw;
+            height: 85vh;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 20px
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+        }
     """)
 
-    ui.query("body").style(f"background-color: {COLOR_STYLE['primary_bg']}")
+    ui.query("body").style(f"background-color: {COLOR_STYLE['primary_bg']};")
 
     with (
         ui.header(wrap=False)
@@ -61,6 +76,9 @@ def input_method_page() -> None:
                     ui.item_section(),
                 ):
                     ui.label(input["name"].upper()).style(f"color: {COLOR_STYLE['contrast']}")
+
+    with ui.element("div").style(f"background-color: {COLOR_STYLE['secondary_bg']}").classes("input-method-container"):
+        pass
 
 
 ui.run()
