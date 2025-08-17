@@ -1,7 +1,10 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from typing import override
 
 from nicegui import ui
 from nicegui.events import KeyEventArguments
+
+from input_method_proto import IInputMethod, TextUpdateCallback
 
 
 def wrap_to_range(num: int, num_min: int, num_max: int) -> int:
@@ -25,7 +28,30 @@ def wrap_to_range(num: int, num_min: int, num_max: int) -> int:
 
 
 @dataclass
-class Keyboard:
+class WrappingPosition:
+    """X and Y position with wrapping addition."""
+
+    x: int
+    y: int
+    max_x: int
+    max_y: int
+
+    def wrapping_add(self, x: int, y: int) -> "WrappingPosition":
+        """Add an X and a Y to self, wrapping as needed."""
+        new_x = wrap_to_range(self.x + x, 0, self.max_x)
+        new_y = wrap_to_range(self.y + y, 0, self.max_y)
+        return WrappingPosition(new_x, new_y, self.max_x, self.max_y)
+
+
+KEYBOARD_KEYS: tuple[str, ...] = (
+    "ABCDEFGabcdefg",
+    "HIJKLMNhijklmn",
+    "OPQRSTUopqrstu",
+    "VWXYZ. vwxyz,\N{SYMBOL FOR BACKSPACE}",
+)
+
+
+class Keyboard(IInputMethod):
     r"""A RPG-style keyboard where characters are selected by navigating with wasd/the arror keys.
 
     Positions are stored internally as (col, row).
@@ -35,65 +61,41 @@ class Keyboard:
 
     """
 
-    keys: tuple[str, ...] = (
-        "ABCDEFGabcdefg",
-        "HIJKLMNhijklmn",
-        "OPQRSTUopqrstu",
-        "VWXYZ. vwxyz,\N{SYMBOL FOR BACKSPACE}",
-    )
+    def __init__(self) -> None:
+        self.position: WrappingPosition = WrappingPosition(0, 0, len(KEYBOARD_KEYS[0]), len(KEYBOARD_KEYS))
+        self.callbacks: list[TextUpdateCallback] = []
+        self.text: str = ""
 
-    position: list[int] = field(default_factory=lambda: [0, 0])
-
-    def __post_init__(self) -> None:
-        if not self.keys:
-            msg = "Keyboard keys must not be empty."
-            raise ValueError(msg)
-        first_row_len = len(self.keys[0])
-        for row in self.keys[1:]:
-            if len(row) != first_row_len:
-                msg = (
-                    "All rows must be the same length, got"
-                    f" {row!r} with length {len(row)} while expecting {first_row_len}."
-                )
-                raise ValueError(msg)
-        if not (0 <= self.position[0] < len(self.keys[0])) or not (0 <= self.position[1] < len(self.keys)):
-            msg = (
-                f"Starting position {self.position} is outside bounds"
-                f" (0, 0) to ({len(self.keys[0]) - 1}, {len(self.keys) - 1})"
-            )
-            raise ValueError(msg)
+        self.render()
+        ui.keyboard(on_key=self.handle_key)
 
     @ui.refreshable_method
     def render(self) -> None:
         """Render the keyboard to the page."""
-        with ui.grid(columns=len(self.keys[0])):
-            for row_index, row in enumerate(self.keys):
+        with ui.grid(columns=len(KEYBOARD_KEYS[0])):
+            for row_index, row in enumerate(KEYBOARD_KEYS):
                 for col_index, char in enumerate(row):
-                    label = ui.label(char if char != "`" else "")
-                    label.style("text-align: center")
-                    if [col_index, row_index] == self.position:
+                    label = ui.label(char).style("text-align: center")
+                    if (col_index, row_index) == (self.position.x, self.position.y):
                         label.style("background-color: lightblue")
 
     def move(self, x: int, y: int) -> None:
         """Move the keyboard selected character in the given directions."""
-        self.position[0] = wrap_to_range(self.position[0] + x, 0, len(self.keys[0]))
-        self.position[1] = wrap_to_range(self.position[1] + y, 0, len(self.keys))
+        self.position = self.position.wrapping_add(x, y)
         self.render.refresh()
 
     def send_selected(self) -> None:
         """Send the selected character to the input view."""
-        print(
-            f"Selected {self.keys[self.position[1]][self.position[0]]!r}",
-        )  # TODO(GiGaGon): Add communication with input view once it exists
+        key = KEYBOARD_KEYS[self.position.y][self.position.x]
+        if key != "\N{SYMBOL FOR BACKSPACE}":
+            self.text += key
+        else:
+            self.text = self.text[:-1]
 
+        for callback in self.callbacks:
+            callback(self.text)
 
-@ui.page("/controller")
-def rpg_text_input_page() -> None:
-    """Page for the RPG style keyboard."""
-    keyboard = Keyboard()
-    keyboard.render()
-
-    def handle_key(e: KeyEventArguments) -> None:
+    def handle_key(self, e: KeyEventArguments) -> None:
         """Input handler for the RPG style keyboard."""
         if not e.action.keydown:
             return
@@ -106,9 +108,11 @@ def rpg_text_input_page() -> None:
             ({"KeyD", "ArrowRight"}, (1, 0)),
         ):
             if e.key.code in key_codes:
-                keyboard.move(*direction)
+                self.move(*direction)
 
         if e.key.code in {"Space", "Enter"}:
-            keyboard.send_selected()
+            self.send_selected()
 
-    ui.keyboard(on_key=handle_key)
+    @override
+    def on_text_update(self, callback: TextUpdateCallback) -> None:
+        self.callbacks.append(callback)

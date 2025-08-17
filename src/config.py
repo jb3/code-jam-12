@@ -2,6 +2,7 @@ from typing import TypedDict
 
 from audio_style_input import AudioEditorComponent
 from input_method_proto import IInputMethod
+from rpg_text_input import Keyboard
 
 PROJECT_NAME: str = "Dynamic Typing"
 PROJECT_DESCRIPTION: str = "How fast can you type?"
@@ -28,7 +29,7 @@ INPUT_METHODS: list[InputMethodSpec] = [
         "name": "WASD",
         "path": "wasd",
         "icon": "",
-        "component": None,
+        "component": Keyboard,
     },
     {
         "name": "Color Picker",
