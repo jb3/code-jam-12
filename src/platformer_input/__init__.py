@@ -22,9 +22,11 @@ class PlatformerInputMethod(input_method_proto.IInputMethod):
     callbacks: list[typing.Callable[[str], None]]
     scene: PlatformerSceneComponent
     held_keys: set[str]
+    input_value: str
 
     def __init__(self) -> None:
         self.callbacks = []
+        self.input_value = ""
         self.scene = PlatformerSceneComponent(INITIAL_POS)
         self.physics = PlatformerPhysicsSimulation(INITIAL_POS)
         self.physics.on_letter(self._hphysics_letter_press)
@@ -46,7 +48,17 @@ class PlatformerInputMethod(input_method_proto.IInputMethod):
 
     def _hphysics_letter_press(self, letter: str) -> None:
         """Call when the physics engine registers a letter press."""
-        print("Got letter", letter)
+        if letter == "<":
+            if len(self.input_value) > 0:
+                self.input_value = self.input_value[:-1]
+        else:
+            self.input_value += letter.replace("_", " ")
+        self._run_callbacks()
+
+    def _run_callbacks(self) -> None:
+        """Run all component text update callbacks."""
+        for c in self.callbacks:
+            c(self.input_value)
 
     def _hinterv(self) -> None:
         """Run every game tick."""
