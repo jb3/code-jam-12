@@ -22,7 +22,7 @@ class PlatformerSceneComponent(ui.element):
 
         self.world = c.world_grid()
         self.player_center_x_offset = math.floor((c.SCENE_WIDTH - c.TILE_SIZE_ML) / 2)
-        self.player_center_y_offset = c.TILE_SIZE_ML
+        self.player_center_y_offset = c.SCENE_HEIGHT - (2 * c.TILE_SIZE_ML)
 
         self.draw_scene(*position)
 
@@ -41,7 +41,7 @@ class PlatformerSceneComponent(ui.element):
 
                 color = "black" if cell == "#" else "red"
                 tile_x = (xpos - player_pos[0]) * c.TILE_SIZE_ML + self.player_center_x_offset
-                tile_y = (ypos - (round(c.SCENE_HEIGHT / c.TILE_SIZE_ML) - player_pos[1])) * c.TILE_SIZE_ML
+                tile_y = (ypos - player_pos[1]) * c.TILE_SIZE_ML + self.player_center_y_offset
                 self._sc_create_sq_tile(tile_x, tile_y, color)
         self._sc_draw_player()
 
@@ -60,5 +60,5 @@ class PlatformerSceneComponent(ui.element):
                 ny = y + offset_y
                 ui.element("div").style(
                     f"""background-color: {col}; width: {c.TILE_SIZE}px; height: {c.TILE_SIZE}px;
-        position: absolute; left: {nx * c.TILE_SIZE}px; bottom: {ny * c.TILE_SIZE}px;"""
+        position: absolute; left: {nx * c.TILE_SIZE}px; top: {ny * c.TILE_SIZE}px;"""
                 )
