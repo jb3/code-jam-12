@@ -56,15 +56,27 @@ def create_header() -> None:
         .classes("p-0") as right_drawer,
         ui.element("q-scroll-area").classes("fit"),
     ):
-        with ui.list().classes("fit"):
-            with ui.item(on_click=lambda: ui.navigate.to("/")).props("clickable").classes("item-hover"):
-                ui.label("HOME").style(f"color: {COLOR_STYLE['contrast']}")
+        with (
+            ui.list().classes("fit"),
+            ui.item(on_click=lambda: ui.navigate.to("/"))
+            .props("clickable")
+            .classes(f"hover:bg-[{COLOR_STYLE['primary']}]"),
+            ui.item_section(),
+        ):
+            ui.label("HOME").style(f"color: {COLOR_STYLE['contrast']}")
+
+        with ui.list().classes("fit"), ui.column().classes("w-full items-center"):
             ui.separator().style("background-color: #313131; width: 95%;")
 
         with ui.list().classes("fit"):
             for input_method in INPUT_METHODS:
                 path = f"/test/{input_method['path']}"
-                with ui.item(on_click=lambda _, p=path: ui.navigate.to(p)).props("clickable").classes("item-hover"):
+                with (
+                    ui.item(on_click=lambda _, p=path: ui.navigate.to(p))
+                    .props("clickable")
+                    .classes(f"hover:bg-[{COLOR_STYLE['primary']}]"),
+                    ui.item_section(),
+                ):
                     ui.label(input_method["name"].upper()).style(f"color: {COLOR_STYLE['contrast']}")
 
 
