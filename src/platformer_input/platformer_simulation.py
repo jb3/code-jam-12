@@ -1,6 +1,9 @@
+import math
 import time
 
 import platformer_input.platformer_constants as constants
+
+EPSILON = 1e-6
 
 
 class PlatformerPhysicsSimulation:
@@ -16,7 +19,7 @@ class PlatformerPhysicsSimulation:
     _last_tick_at: float
 
     _keys: set[str]
-    _world: list[list[str]]
+    _world: list[list[bool]]
 
     def __init__(self, initial: tuple[int, int]) -> None:
         self.player_x, self.player_y = initial
@@ -27,8 +30,10 @@ class PlatformerPhysicsSimulation:
         self._last_tick_at = time.perf_counter()
 
         self._keys = set()
-        self._world = constants.world_grid()
-        self._world.reverse()
+        # turn into mask for efficient access
+        self._world = []
+        world = constants.world_grid()
+        self._world = [[cell == "#" for cell in row] for row in world]
 
     def set_held_keys(self, keys: set[str]) -> None:
         """Set the current player-held keys."""
@@ -52,13 +57,47 @@ class PlatformerPhysicsSimulation:
             self._yvel = min(constants.MOV_SPEED, self._yvel + delta_accel)
 
         self.player_x += self._xvel
-        self.player_y += self._yvel
 
         decay_factor = 1 - constants.VELOCITY_DECAY_RATE * self._deltatime
         decay_factor = max(decay_factor, 0)
         self._xvel *= decay_factor
-        self._yvel *= decay_factor
 
-    def _collide(self, world: tuple[int, int]) -> bool:
+        self._apply_y_velocity()
+
+    def _apply_y_velocity(self) -> None:
+        """Apply gravity and vertical player clamping."""
+        self._yvel += constants.GRAVITY_FORCE * self._deltatime
+        dy = self._yvel * self._deltatime
+        if dy != 0:
+            new_y = self.player_y + dy
+            if self._collide((self.player_x, new_y)):
+                self._yvel = 0
+                if dy > 0:
+                    player_edge_b = self.player_y + 1
+                    tile_edge = int(player_edge_b)
+                    new_y = tile_edge - EPSILON
+                else:
+                    tile_edge = int(self.player_y)
+                    new_y = tile_edge + EPSILON
+            self.player_y = new_y
+
+    def _collide(self, player: tuple[float, float]) -> bool:
         """Check if a target cell contains a wall."""
-        return self._world[world[1]][world[0]] == "#"
+        player_left = player[0]
+        player_right = player[0] + 1
+        player_top = player[1]
+        player_bottom = player[1] + 1
+
+        left_tile = math.floor(player_left)
+        right_tile = math.floor(player_right - EPSILON)
+        top_tile = math.floor(player_top)
+        bottom_tile = math.floor(player_bottom - EPSILON)
+
+        for tile_y in range(top_tile, bottom_tile + 1):
+            for tile_x in range(left_tile, right_tile + 1):
+                in_map = 0 <= tile_y < len(self._world) and 0 <= tile_x < len(self._world[0])
+                if not in_map:
+                    continue
+                if self._world[tile_y][tile_x]:
+                    return True
+        return False
