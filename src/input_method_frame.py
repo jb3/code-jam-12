@@ -63,16 +63,18 @@ def input_method_page() -> None:
     ):
         with (
             ui.list().classes("fit"),
-            ui.item(on_click=lambda: ui.navigate.to("/")).props("clickable"),
+            ui.item(on_click=lambda: ui.navigate.to("/")).props("clickable").classes("hover:bg-[#12E7B2]"),
             ui.item_section(),
         ):
             ui.label("HOME").style(f"color: {COLOR_STYLE['contrast']}")
-        with ui.list().classes("fit"):
-            ui.separator()
+        with ui.list().classes("fit"), ui.column().classes("w-full items-center"):
+            ui.separator().style("background-color: #313131; width: 95%;")
         with ui.list().classes("fit"):
             for input in INPUT_METHODS:
                 with (
-                    ui.item(on_click=lambda _, path=f"/test/{input['path']}": ui.navigate.to(path)).props("clickable"),
+                    ui.item(on_click=lambda _, path=f"/test/{input['path']}": ui.navigate.to(path))
+                    .props("clickable")
+                    .classes("hover:bg-[#12E7B2]"),
                     ui.item_section(),
                 ):
                     ui.label(input["name"].upper()).style(f"color: {COLOR_STYLE['contrast']}")
