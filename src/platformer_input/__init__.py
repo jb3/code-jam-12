@@ -9,7 +9,7 @@ from platformer_input.platformer_simulation import PlatformerPhysicsSimulation
 
 ALLOWED_KEYS = ("ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Shift", " ", "Enter")
 INITIAL_POS = (1, 10)
-FPS = 144
+FPS = 60
 
 
 class PlatformerInputMethod(input_method_proto.IInputMethod):
