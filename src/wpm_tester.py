@@ -35,6 +35,7 @@ class WpmTesterPageState:
 
 def create_header() -> None:
     """Create header and sidebar."""
+    # Header
     with (
         ui.header(wrap=False)
         .style(f"background-color: {COLOR_STYLE['secondary_bg']}")
@@ -49,6 +50,7 @@ def create_header() -> None:
         )
         ui.button(on_click=lambda: right_drawer.toggle(), icon="menu").props("flat color=white")
 
+    # Sidebar
     with (
         ui.right_drawer(value=False, fixed=False)
         .style(f"background-color: {COLOR_STYLE['secondary_bg']}")
@@ -56,6 +58,7 @@ def create_header() -> None:
         .classes("p-0") as right_drawer,
         ui.element("q-scroll-area").classes("fit"),
     ):
+        # Home nav button
         with (
             ui.list().classes("fit"),
             ui.item(on_click=lambda: ui.navigate.to("/"))
@@ -68,6 +71,7 @@ def create_header() -> None:
         with ui.list().classes("fit"), ui.column().classes("w-full items-center"):
             ui.separator().style("background-color: #313131; width: 95%;")
 
+        # Input method nav buttons
         with ui.list().classes("fit"):
             for input_method in INPUT_METHODS:
                 path = f"/test/{input_method['path']}"
