@@ -31,9 +31,11 @@ class PlatformerSceneComponent(ui.element):
             f"grid-template-rows:repeat({len(self.world)}, {c.TILE_SIZE}px);"
         )
 
+        self.px_player_offset_lx = ((c.SCENE_WIDTH - 1) * c.TILE_SIZE) / 2
+        self.px_player_offset_ty = (c.SCENE_HEIGHT * c.TILE_SIZE) - 2 * c.TILE_SIZE
         with self.mask_element:
             ui.element("div").style(
-                f"position:absolute;bottom:{c.TILE_SIZE}px;left:{((c.SCENE_WIDTH - 1) * c.TILE_SIZE) / 2}px;"
+                f"position:absolute;top:{self.px_player_offset_ty}px;left:{self.px_player_offset_lx}px;"
                 f"background-color:{c.COLOR_PLAYER};width:{c.TILE_SIZE}px;height:{c.TILE_SIZE}px"
             )
 
@@ -46,7 +48,11 @@ class PlatformerSceneComponent(ui.element):
 
     def move_player(self, player_x: float, player_y: float) -> None:
         """Move the player in the renderer."""
-        self.map_container.style(f"right:{player_x * c.TILE_SIZE}px;bottom:{player_y * c.TILE_SIZE}px")
+        px_left = self.px_player_offset_lx - player_x * c.TILE_SIZE
+        self.map_container.style(f"left:{px_left}px")
+
+        px_top = self.px_player_offset_ty - player_y * c.TILE_SIZE
+        self.map_container.style(f"top:{px_top}px")
 
     def _get_bg_color(self, scp: str) -> str:
         """Get the background color in a tile by the tile type."""
