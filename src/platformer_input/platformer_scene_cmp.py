@@ -31,6 +31,12 @@ class PlatformerSceneComponent(ui.element):
             f"grid-template-rows:repeat({len(self.world)}, {c.TILE_SIZE}px);"
         )
 
+        with self.mask_element:
+            ui.element("div").style(
+                f"position:absolute;bottom:{c.TILE_SIZE}px;left:{((c.SCENE_WIDTH - 1) * c.TILE_SIZE) / 2}px;"
+                f"background-color:{c.COLOR_PLAYER};width:{c.TILE_SIZE}px;height:{c.TILE_SIZE}px"
+            )
+
         with self.map_container:
             for row in self.world:
                 for cell in row:
