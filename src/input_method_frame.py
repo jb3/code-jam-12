@@ -63,7 +63,9 @@ def input_method_page() -> None:
     ):
         with (
             ui.list().classes("fit"),
-            ui.item(on_click=lambda: ui.navigate.to("/")).props("clickable").classes("hover:bg-[#12E7B2]"),
+            ui.item(on_click=lambda: ui.navigate.to("/"))
+            .props("clickable")
+            .classes(f"hover:bg-[{COLOR_STYLE['primary']}]"),
             ui.item_section(),
         ):
             ui.label("HOME").style(f"color: {COLOR_STYLE['contrast']}")
@@ -74,7 +76,7 @@ def input_method_page() -> None:
                 with (
                     ui.item(on_click=lambda _, path=f"/test/{input['path']}": ui.navigate.to(path))
                     .props("clickable")
-                    .classes("hover:bg-[#12E7B2]"),
+                    .classes(f"hover:bg-[{COLOR_STYLE['primary']}]"),
                     ui.item_section(),
                 ):
                     ui.label(input["name"].upper()).style(f"color: {COLOR_STYLE['contrast']}")
