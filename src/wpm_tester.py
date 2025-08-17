@@ -34,12 +34,6 @@ class WpmTesterPageState:
 
 
 ui.add_css("""
-.header-title {
-    font-family: Arial, sans-serif;
-    font-size: 35px;
-    font-weight: bold;
-}
-
 .input-method-container {
     display: flex;
     flex-direction: column;
@@ -76,7 +70,11 @@ def create_header() -> None:
     ):
         with ui.card().props("flat"):  # small logo placeholder
             pass
-        ui.label(PROJECT_NAME.upper()).style(f"color: {COLOR_STYLE['primary']}").classes("header-title")
+        (
+            ui.label(PROJECT_NAME.upper())
+            .style(f"color: {COLOR_STYLE['primary']}; font-family: Arial, sans-serif;")
+            .classes("text-4xl font-bold")
+        )
         ui.button(on_click=lambda: right_drawer.toggle(), icon="menu").props("flat color=white")
 
     with (
