@@ -48,6 +48,7 @@ class PlatformerInputMethod(input_method_proto.IInputMethod):
 
     def _hphysics_letter_press(self, letter: str) -> None:
         """Call when the physics engine registers a letter press."""
+        self.scene.play_bounce_effect(letter)
         if letter == "<":
             if len(self.input_value) > 0:
                 self.input_value = self.input_value[:-1]

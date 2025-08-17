@@ -8,24 +8,36 @@ class PlatformerSceneComponent(ui.element):
 
     mask_element: ui.element
     world: list[list[str]]
+    letter_el_map: dict[str, ui.label]
 
     def __init__(self, position: tuple[int, int]) -> None:
         super().__init__("div")
-        ui.add_css(f""".platformer-input-method-element .tile-ground {{
+        ui.add_css(
+            f""".platformer-input-method-element .tile-ground {{
     background-color: {c.COLOR_GROUND};
 }}
 .platformer-input-method-element .tile-sky {{
     background-color: {c.COLOR_BG};
-}}
-.platformer-input-method-element .tile-letter {{
+}}"""
+            """
+.platformer-input-method-element .tile-letter {
     background-color: red;
     text-align: center;
     color: white;
     font-weight: bold;
     font-size: 1.15em;
     padding-top: 2px;
-}}
-""")
+}
+.platformer-input-method-element .tile-bounce {
+    animation: bounce 200ms ease;
+}
+@keyframes bounce {
+    0% { margin-top: 0; margin-bottom: 0; }
+    50% { margin-top: -5px; margin-bottom: 5px; background-color: darkred; scale: 1.05 }
+    100% { margin-top: 0; margin-bottom: 0; }
+}
+"""
+        )
         self.classes("platformer-input-method-element")
         with self:
             self.mask_element = ui.element("div")
@@ -54,13 +66,16 @@ class PlatformerSceneComponent(ui.element):
                 f"background-color:{c.COLOR_PLAYER};width:{c.TILE_SIZE}px;height:{c.TILE_SIZE}px"
             )
 
+        self.letter_el_map = {}
+
         with self.map_container:
             for row in self.world:
                 for cell in row:
                     if cell in "# ":
                         ui.element("div").classes("tile-ground" if cell == "#" else "tile-sky")
                     else:
-                        ui.label(cell.replace("_", "Spc").replace("<", "\u232b")).classes("tile-letter")
+                        lb = ui.label(cell.replace("_", "Spc").replace("<", "\u232b")).classes("tile-letter")
+                        self.letter_el_map[cell] = lb
 
         self.move_player(*position)
 
@@ -71,3 +86,11 @@ class PlatformerSceneComponent(ui.element):
 
         px_top = self.px_player_offset_ty - player_y * c.TILE_SIZE
         self.map_container.style(f"top:{px_top}px")
+
+    def play_bounce_effect(self, letter: str) -> None:
+        """Play a short bounce effect on a letter tile."""
+        tile = self.letter_el_map.get(letter)
+        if tile is None:
+            return
+        tile.classes("tile-bounce")
+        ui.timer(0.2, lambda: tile.classes(remove="tile-bounce"), once=True)
