@@ -9,11 +9,11 @@ SCENE_HEIGHT = 9
 
 JUMP_FORCE = 5
 """Max player speed."""
-MOV_SPEED = 4
+MOV_SPEED = 2
 """How fast the player accelerates."""
-ACCEL_SPEED = 5
+ACCEL_SPEED = 3
 """Essentially friction simulation"""
-VELOCITY_DECAY_RATE = 5
+VELOCITY_DECAY_RATE = 10
 
 COLOR_BG = "skyblue"
 COLOR_PLAYER = "purple"
