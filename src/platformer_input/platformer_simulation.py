@@ -1,10 +1,23 @@
 import math
 import time
 import typing
+from enum import Enum
 
 import platformer_input.platformer_constants as constants
 
 EPSILON = 1e-6
+
+
+class TileType(Enum):
+    """A type of tile."""
+
+    AIR = 0
+    BLOCK = 1
+    LETTER = 2
+
+    def collide(self) -> bool:
+        """Whether collision is enabled on this tile."""
+        return self.value > 0
 
 
 class PlatformerPhysicsSimulation:
@@ -20,8 +33,7 @@ class PlatformerPhysicsSimulation:
     _last_tick_at: float
 
     _keys: set[str]
-    # 0: air, 1: block, 2: letter
-    _world: list[list[typing.Literal[0, 1, 2]]]
+    _world: list[list[str]]
 
     def __init__(self, initial: tuple[int, int]) -> None:
         self.player_x, self.player_y = initial
@@ -32,10 +44,7 @@ class PlatformerPhysicsSimulation:
         self._last_tick_at = 0
 
         self._keys = set()
-        # turn into mask for efficient access
-        self._world = []
-        world = constants.world_grid()
-        self._world = [[0 if cell == " " else 1 if cell == "#" else 2 for cell in row] for row in world]
+        self._world = constants.world_grid()
 
     def set_held_keys(self, keys: set[str]) -> None:
         """Set the current player-held keys."""
@@ -55,11 +64,15 @@ class PlatformerPhysicsSimulation:
             self._xvel = min(constants.MOV_SPEED, self._xvel + delta_accel)
         if "ArrowLeft" in self._keys:
             self._xvel = max(-constants.MOV_SPEED, self._xvel - delta_accel)
-        if "ArrowUp" in self._keys and self._collide((self.player_x, self.player_y + 2 * EPSILON)):
+        if "ArrowUp" in self._keys and self._collides((self.player_x, self.player_y + 2 * EPSILON)):
             self._yvel = -constants.JUMP_FORCE
 
         self._apply_x_velocity()
         self._apply_y_velocity()
+
+    def _fon_letter(self, letter: str) -> None:
+        """Call when a letter should be pushed."""
+        print("hit", letter)
 
     def _apply_x_velocity(self) -> None:
         """Apply horizontal velocity and decay."""
@@ -69,7 +82,7 @@ class PlatformerPhysicsSimulation:
         dx = self._xvel * self._deltatime
         if dx != 0:
             new_x = self.player_x + dx
-            if self._collide((new_x, self.player_y)):
+            if self._collides((new_x, self.player_y)):
                 self._xvel = 0
                 if dx > 0:
                     player_edge_r = self.player_x + 1
@@ -86,7 +99,7 @@ class PlatformerPhysicsSimulation:
         dy = self._yvel * self._deltatime
         if dy != 0:
             new_y = self.player_y + dy
-            if self._collide((self.player_x, new_y)):
+            if collision_result := self._collision_tile((self.player_x, new_y)):
                 self._yvel = 0
                 if dy > 0:
                     player_edge_b = self.player_y + 1
@@ -95,10 +108,16 @@ class PlatformerPhysicsSimulation:
                 else:
                     tile_edge = int(self.player_y)
                     new_y = tile_edge + EPSILON
+                    if collision_result != "#":
+                        self._fon_letter(collision_result)
             self.player_y = new_y
 
-    def _collide(self, player: tuple[float, float]) -> bool:
-        """Check if a target cell contains a wall."""
+    def _collides(self, player: tuple[float, float]) -> bool:
+        """Check if a position collides with a tile."""
+        return bool(self._collision_tile(player))
+
+    def _collision_tile(self, player: tuple[float, float]) -> str | typing.Literal[False]:
+        """Check if the position collides with a tile, if so get the tile data."""
         player_left = player[0]
         player_right = player[0] + 1
         player_top = player[1]
@@ -114,6 +133,6 @@ class PlatformerPhysicsSimulation:
                 in_map = 0 <= tile_y < len(self._world) and 0 <= tile_x < len(self._world[0])
                 if not in_map:
                     continue
-                if self._world[tile_y][tile_x] > 0:
-                    return True
+                if (v := self._world[tile_y][tile_x]) != " ":
+                    return v
         return False
