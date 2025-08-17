@@ -9,7 +9,7 @@ from platformer_input.platformer_simulation import PlatformerPhysicsSimulation
 
 ALLOWED_KEYS = ("ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Shift", " ", "Enter")
 INITIAL_POS = (0, 10)
-FPS = 15
+FPS = 144
 
 
 class PlatformerInputMethod(input_method_proto.IInputMethod):
@@ -46,7 +46,7 @@ class PlatformerInputMethod(input_method_proto.IInputMethod):
     def _hinterv(self) -> None:
         """Run every game tick."""
         self.physics.tick()
-        self.scene.draw_scene(self.physics.player_x, self.physics.player_y)
+        self.scene.move_player(self.physics.player_x, self.physics.player_y)
 
     def on_text_update(self, callback: typing.Callable[[str], None]) -> None:
         """Call `callback` every time the user input changes."""
