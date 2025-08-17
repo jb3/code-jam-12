@@ -7,7 +7,7 @@ SCENE_WIDTH = 16
 """Height in tiles of the whole scene."""
 SCENE_HEIGHT = 9
 
-JUMP_FORCE = 12
+JUMP_FORCE = 14
 """Max player speed."""
 MOV_SPEED = 200
 """How fast the player accelerates."""
@@ -15,25 +15,30 @@ ACCEL_SPEED = 150
 """Essentially friction simulation"""
 VELOCITY_DECAY_RATE = 10
 """Gravity force"""
-GRAVITY_FORCE = 15
+GRAVITY_FORCE = 16
 
 COLOR_BG = "skyblue"
 COLOR_PLAYER = "purple"
 COLOR_GROUND = "#181818"
 
 
-SCENE = """######################################
-     u  v  w  x      y  z  .  !  ,
-
-    ############    ##############
-
-    k  l  m  n  o  p  q  r  s  t
-
-  ##############    ################
-
-      a  b  c  d  e  f  g  h  i  j
-
-######################################
+SCENE = """
+########################################
+#                                      #
+#     u  v  w  x      y  z  .  !  ,    #
+#                                      #
+#                                      #
+#    ###########      #############    #
+#                                      #
+#   k  l  m  n  o     p  q  r  s  t    #
+#                                      #
+#                                      #
+#  ##############    ################  #
+#                                      #
+#   a  b  c  d  e    f  g  h  i  j     #
+#                                      #
+#                                      #
+########################################
 """
 
 

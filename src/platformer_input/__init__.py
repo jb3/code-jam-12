@@ -8,7 +8,7 @@ from platformer_input.platformer_scene_cmp import PlatformerSceneComponent
 from platformer_input.platformer_simulation import PlatformerPhysicsSimulation
 
 ALLOWED_KEYS = ("ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Shift", " ", "Enter")
-INITIAL_POS = (0, 9)
+INITIAL_POS = (1, 10)
 FPS = 144
 
 
