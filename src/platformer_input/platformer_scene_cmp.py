@@ -11,7 +11,21 @@ class PlatformerSceneComponent(ui.element):
 
     def __init__(self, position: tuple[int, int]) -> None:
         super().__init__("div")
-
+        ui.add_css(f""".platformer-input-method-element .tile-ground {{
+    background-color: {c.COLOR_GROUND};
+}}
+.platformer-input-method-element .tile-sky {{
+    background-color: {c.COLOR_BG};
+}}
+.platformer-input-method-element .tile-letter {{
+    background-color: red;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    font-size: 1.25em;
+}}
+""")
+        self.classes("platformer-input-method-element")
         with self:
             self.mask_element = ui.element("div")
         self.mask_element.style(
@@ -42,7 +56,10 @@ class PlatformerSceneComponent(ui.element):
         with self.map_container:
             for row in self.world:
                 for cell in row:
-                    ui.element("div").style(f"background-color:{self._get_bg_color(cell)}")
+                    if cell in "# ":
+                        ui.element("div").classes("tile-ground" if cell == "#" else "tile-sky")
+                    else:
+                        ui.label(cell).classes("tile-letter")
 
         self.move_player(*position)
 
@@ -53,11 +70,3 @@ class PlatformerSceneComponent(ui.element):
 
         px_top = self.px_player_offset_ty - player_y * c.TILE_SIZE
         self.map_container.style(f"top:{px_top}px")
-
-    def _get_bg_color(self, scp: str) -> str:
-        """Get the background color in a tile by the tile type."""
-        if scp == "#":
-            return c.COLOR_GROUND
-        if scp == " ":
-            return c.COLOR_BG
-        return "red"
