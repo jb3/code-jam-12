@@ -1,6 +1,12 @@
+"""Constants for the platformer input method rendering & simulator."""
+
+"""Size in pixels of each "tile"."""
 TILE_SIZE = 10
+"""Width in tiles of the whole scene."""
 SCENE_WIDTH = 45
+"""Height in tiles of the whole scene."""
 SCENE_HEIGHT = 30
+"""Tile size multiplier."""
 TILE_SIZE_ML = 3
 
 JUMP_FORCE = 5
