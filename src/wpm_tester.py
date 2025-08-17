@@ -34,14 +34,6 @@ class WpmTesterPageState:
 
 
 ui.add_css("""
-.header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 8vh;
-    padding: 0 1rem;
-}
-
 .header-title {
     font-family: Arial, sans-serif;
     font-size: 35px;
@@ -75,9 +67,13 @@ body {
 """)
 
 
-def create_header() -> ui.label:
+def create_header() -> None:
     """Create header label."""
-    with ui.header(wrap=False).style(f"background-color: {COLOR_STYLE['secondary_bg']}").classes("header"):
+    with (
+        ui.header(wrap=False)
+        .style(f"background-color: {COLOR_STYLE['secondary_bg']}")
+        .classes("flex items-center justify-between h-[8vh] py-0 px-4")
+    ):
         with ui.card().props("flat"):  # small logo placeholder
             pass
         ui.label(PROJECT_NAME.upper()).style(f"color: {COLOR_STYLE['primary']}").classes("header-title")
