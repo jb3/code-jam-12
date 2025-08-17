@@ -9,9 +9,9 @@ SCENE_HEIGHT = 9
 
 JUMP_FORCE = 12
 """Max player speed."""
-MOV_SPEED = 2
+MOV_SPEED = 200
 """How fast the player accelerates."""
-ACCEL_SPEED = 3
+ACCEL_SPEED = 150
 """Essentially friction simulation"""
 VELOCITY_DECAY_RATE = 10
 """Gravity force"""

@@ -54,13 +54,27 @@ class PlatformerPhysicsSimulation:
         if "ArrowUp" in self._keys and self._collide((self.player_x, self.player_y + 2 * EPSILON)):
             self._yvel = -constants.JUMP_FORCE
 
-        self.player_x += self._xvel
+        self._apply_x_velocity()
+        self._apply_y_velocity()
 
+    def _apply_x_velocity(self) -> None:
+        """Apply horizontal velocity and decay."""
         decay_factor = 1 - constants.VELOCITY_DECAY_RATE * self._deltatime
         decay_factor = max(decay_factor, 0)
         self._xvel *= decay_factor
-
-        self._apply_y_velocity()
+        dx = self._xvel * self._deltatime
+        if dx != 0:
+            new_x = self.player_x + dx
+            if self._collide((new_x, self.player_y)):
+                self._xvel = 0
+                if dx > 0:
+                    player_edge_r = self.player_x + 1
+                    tile_edge = int(player_edge_r)
+                    new_x = tile_edge - EPSILON
+                else:
+                    tile_edge = int(self.player_x)
+                    new_x = tile_edge + EPSILON
+            self.player_x = new_x
 
     def _apply_y_velocity(self) -> None:
         """Apply gravity and vertical player clamping."""
