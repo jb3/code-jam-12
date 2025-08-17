@@ -4,7 +4,7 @@ from pathlib import Path
 
 from nicegui import app, ui
 
-import input_method_proto
+from input_method_proto import IInputMethod, TextUpdateCallback
 
 media = Path("./static")
 app.add_media_files("/media", media)
@@ -12,11 +12,11 @@ app.add_media_files("/media", media)
 char_selection = [string.ascii_uppercase, string.ascii_lowercase, string.punctuation]
 
 
-class AudioEditorComponent(input_method_proto.IInputMethod):
+class AudioEditorComponent(IInputMethod):
     """Render the audio editor page with spinning record and letter spinner."""
 
     def __init__(self) -> None:
-        self._text_update_callback: input_method_proto.TextUpdateCallback | None = None
+        self._text_update_callback: TextUpdateCallback | None = None
         self.current_char_selection_index_container = [0]
         self.current_chars_selected = char_selection[0]
         self.current_letter_index_container = [0]
@@ -218,7 +218,7 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
         self.intro_card.style("display:none")
         self.main_content.style("display:flex")
 
-    def on_text_update(self, callback: input_method_proto.TextUpdateCallback) -> None:
+    def on_text_update(self, callback: TextUpdateCallback) -> None:
         """Register a callback to be called whenever the text updates.
 
         Args:
