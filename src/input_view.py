@@ -41,10 +41,12 @@ class input_view(ui.element):  # noqa: N801 this is the nicegui convention
 }
 
 .input-view-bg {
+    font-size: 20pt;
     grid-area: 1 / 1 / 2 / 2;
 }
 
 .input-view-fg {
+    font-size: 20pt;
     grid-area: 1 / 1 / 2 / 2;
 }
 
