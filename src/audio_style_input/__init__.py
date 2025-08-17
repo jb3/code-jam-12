@@ -1,6 +1,5 @@
 import asyncio
 import string
-from collections.abc import Callable
 from pathlib import Path
 
 from nicegui import app, ui
@@ -17,7 +16,7 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
     """Render the audio editor page with spinning record and letter spinner."""
 
     def __init__(self) -> None:
-        self._text_update_callback: Callable[[str], None] | None = None
+        self._text_update_callback: input_method_proto.TextUpdateCallback | None = None
         self.current_char_selection_index_container = [0]
         self.current_chars_selected = char_selection[0]
         self.current_letter_index_container = [0]
@@ -219,11 +218,11 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
         self.intro_card.style("display:none")
         self.main_content.style("display:flex")
 
-    def on_text_update(self, callback: Callable[[str], None]) -> None:
+    def on_text_update(self, callback: input_method_proto.TextUpdateCallback) -> None:
         """Register a callback to be called whenever the text updates.
 
         Args:
-            callback (Callable[[str], None]): Function called with updated text.
+            callback (TextUpdateCallback): Function called with updated text.
 
         """
         self._text_update_callback = callback
