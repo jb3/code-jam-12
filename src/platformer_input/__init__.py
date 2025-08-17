@@ -27,6 +27,7 @@ class PlatformerInputMethod(input_method_proto.IInputMethod):
         self.callbacks = []
         self.scene = PlatformerSceneComponent(INITIAL_POS)
         self.physics = PlatformerPhysicsSimulation(INITIAL_POS)
+        self.physics.on_letter(self._hphysics_letter_press)
         self.held_keys = set()
         ui.keyboard(lambda e: self.keyboard_handler(e))
         ui.timer(1 / FPS, lambda: self._hinterv())
@@ -42,6 +43,10 @@ class PlatformerInputMethod(input_method_proto.IInputMethod):
         elif event.action.keyup and evk in self.held_keys:
             self.held_keys.remove(evk)
         self.physics.set_held_keys(self.held_keys)
+
+    def _hphysics_letter_press(self, letter: str) -> None:
+        """Call when the physics engine registers a letter press."""
+        print("Got letter", letter)
 
     def _hinterv(self) -> None:
         """Run every game tick."""

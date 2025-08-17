@@ -22,7 +22,8 @@ class PlatformerSceneComponent(ui.element):
     text-align: center;
     color: white;
     font-weight: bold;
-    font-size: 1.25em;
+    font-size: 1.15em;
+    padding-top: 2px;
 }}
 """)
         self.classes("platformer-input-method-element")
@@ -59,7 +60,7 @@ class PlatformerSceneComponent(ui.element):
                     if cell in "# ":
                         ui.element("div").classes("tile-ground" if cell == "#" else "tile-sky")
                     else:
-                        ui.label(cell).classes("tile-letter")
+                        ui.label(cell.replace("_", "Spc").replace("<", "\u232b")).classes("tile-letter")
 
         self.move_player(*position)
 
