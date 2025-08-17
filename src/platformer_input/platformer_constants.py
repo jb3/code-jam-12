@@ -11,11 +11,11 @@ TILE_SIZE_ML = 3
 
 JUMP_FORCE = 5
 """Max player speed."""
-MOV_SPEED = 10
+MOV_SPEED = 4
 """How fast the player accelerates."""
-ACCEL_SPEED = 15
+ACCEL_SPEED = 5
 """Essentially friction simulation"""
-VELOCITY_DECAY_RATE = 0.8
+VELOCITY_DECAY_RATE = 5
 
 COLOR_BG = "skyblue"
 COLOR_PLAYER = "purple"
