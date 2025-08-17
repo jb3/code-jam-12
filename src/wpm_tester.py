@@ -33,56 +33,24 @@ class WpmTesterPageState:
     text: str
 
 
-ui.add_css("""
-.header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 8vh;
-    padding: 0 1rem;
-}
-
-.header-title {
-    font-family: Arial, sans-serif;
-    font-size: 35px;
-    font-weight: bold;
-}
-
-.input-method-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-    position: absolute;
-    width: 90vw;
-    height: 85vh;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 20px;
-}
-
-body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
-}
-
-.item-hover:hover {
-    background-color: #313131;
-}
-""")
-
-
-def create_header() -> ui.label:
-    """Create header label."""
-    with ui.header(wrap=False).style(f"background-color: {COLOR_STYLE['secondary_bg']}").classes("header"):
+def create_header() -> None:
+    """Create header and sidebar."""
+    # Header
+    with (
+        ui.header(wrap=False)
+        .style(f"background-color: {COLOR_STYLE['secondary_bg']}")
+        .classes("flex items-center justify-between h-[8vh] py-0 px-4")
+    ):
         with ui.card().props("flat"):  # small logo placeholder
             pass
-        ui.label(PROJECT_NAME.upper()).style(f"color: {COLOR_STYLE['primary']}").classes("header-title")
+        (
+            ui.label(PROJECT_NAME.upper())
+            .style(f"color: {COLOR_STYLE['primary']}; font-family: Arial, sans-serif;")
+            .classes("text-4xl font-bold")
+        )
         ui.button(on_click=lambda: right_drawer.toggle(), icon="menu").props("flat color=white")
 
+    # Sidebar
     with (
         ui.right_drawer(value=False, fixed=False)
         .style(f"background-color: {COLOR_STYLE['secondary_bg']}")
@@ -90,15 +58,29 @@ def create_header() -> ui.label:
         .classes("p-0") as right_drawer,
         ui.element("q-scroll-area").classes("fit"),
     ):
-        with ui.list().classes("fit"):
-            with ui.item(on_click=lambda: ui.navigate.to("/")).props("clickable").classes("item-hover"):
-                ui.label("HOME").style(f"color: {COLOR_STYLE['contrast']}")
+        # Home nav button
+        with (
+            ui.list().classes("fit"),
+            ui.item(on_click=lambda: ui.navigate.to("/"))
+            .props("clickable")
+            .classes(f"hover:bg-[{COLOR_STYLE['primary']}]"),
+            ui.item_section(),
+        ):
+            ui.label("HOME").style(f"color: {COLOR_STYLE['contrast']}")
+
+        with ui.list().classes("fit"), ui.column().classes("w-full items-center"):
             ui.separator().style("background-color: #313131; width: 95%;")
 
+        # Input method nav buttons
         with ui.list().classes("fit"):
             for input_method in INPUT_METHODS:
                 path = f"/test/{input_method['path']}"
-                with ui.item(on_click=lambda _, p=path: ui.navigate.to(p)).props("clickable").classes("item-hover"):
+                with (
+                    ui.item(on_click=lambda _, p=path: ui.navigate.to(p))
+                    .props("clickable")
+                    .classes(f"hover:bg-[{COLOR_STYLE['primary']}]"),
+                    ui.item_section(),
+                ):
                     ui.label(input_method["name"].upper()).style(f"color: {COLOR_STYLE['contrast']}")
 
 
@@ -165,10 +147,22 @@ async def wpm_tester_page(method: str) -> None:
 
     create_header()
 
+    # Main body
     ui.query("body").style(f"background-color: {COLOR_STYLE['primary_bg']};")
 
-    with ui.element("div").style(f"background-color: {COLOR_STYLE['secondary_bg']}").classes("input-method-container"):
-        iv = input_view.input_view(text_to_use).classes("w-full")
+    with (
+        ui.element("div")
+        .style(f"background-color: {COLOR_STYLE['secondary_bg']}")
+        .classes(
+            """flex flex-col justify-evenly items-center absolute w-[90vw] h-[85vh] left-1/2 top-1/2
+             transform -translate-x-1/2 -translate-y-1/2 rounded-xl"""
+        )
+    ):
+        # Sentence and timer div
+        with ui.element("div").classes("flex items-center w-full h-1/4 p-5"):
+            iv = input_view.input_view(text_to_use).classes("w-full")
+            chip_package = create_time_chips()
 
-    chip_package = create_time_chips()
-    setup(method, text_to_use, state, chip_package, iv)
+        # Input method div
+        with ui.element("div").classes("align-items w-full h-3/4"):
+            setup(method, text_to_use, state, chip_package, iv)
