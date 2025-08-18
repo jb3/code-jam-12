@@ -64,7 +64,7 @@ class PlatformerInputMethod(input_method_proto.IInputMethod):
     def _hinterv(self) -> None:
         """Run every game tick."""
         self.simulation.tick()
-        self.renderer.move_player(self.simulation.player_x, self.simulation.player_y)
+        self.renderer.rerender(self.simulation.player_x, self.simulation.player_y, self.simulation.capitalized)
 
     def on_text_update(self, callback: typing.Callable[[str], None]) -> None:
         """Call `callback` every time the user input changes."""
