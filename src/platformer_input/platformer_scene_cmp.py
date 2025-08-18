@@ -40,7 +40,7 @@ class PlatformerRendererComponent(ui.element):
 """)
         self.classes("platformer-input-method-element flex items-center justify-center")
         with self:
-            self.mask_element = ui.element("div")
+            self.mask_element = ui.element("div").classes("rounded-3xl m-4")
         self.mask_element.style(
             f"width: {c.TILE_SIZE * c.SCENE_WIDTH}px; height: {c.TILE_SIZE * c.SCENE_HEIGHT}px;"
             f"background-color: black; position: relative; overflow: hidden"
