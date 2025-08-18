@@ -2,6 +2,8 @@ from nicegui import ui
 
 import platformer_input.platformer_constants as c
 
+EMOJIS = {"sky": "\U0001f600", "ground": "\U0001f61e", "letter": "\U0001f636"}
+
 
 class PlatformerSceneComponent(ui.element):
     """Displays the characters and scene within the game."""
@@ -12,43 +14,45 @@ class PlatformerSceneComponent(ui.element):
 
     def __init__(self, position: tuple[int, int]) -> None:
         super().__init__("div")
-        ui.add_css(
-            f""".platformer-input-method-element .tile-ground {{
-    background-color: {c.COLOR_GROUND};
-}}
-.platformer-input-method-element .tile-sky {{
-    background-color: {c.COLOR_BG};
-}}"""
-            """
-.platformer-input-method-element .tile-letter {
-    background-color: red;
+        ui.add_css(""".platformer-input-method-element .tile {
+    font-size: 30px;
+    margin-top: -7px;
+    margin-left: -7px;
+    border-radius: 5px;
+}
+.platformer-input-method-element .tile div {
+    transform: translateY(-42px);
     text-align: center;
     color: white;
     font-weight: bold;
-    font-size: 1.15em;
-    padding-top: 2px;
+    font-size: 1.5rem;
+    background-color: #0008;
+    border-radius: 100%;
 }
 .platformer-input-method-element .tile-bounce {
     animation: bounce 200ms ease;
 }
 @keyframes bounce {
     0% { margin-top: 0; margin-bottom: 0; }
-    50% { margin-top: -5px; margin-bottom: 5px; background-color: darkred; scale: 1.05 }
+    50% { margin-top: -5px; margin-bottom: 5px; color: cyan; scale: 1.05 }
     100% { margin-top: 0; margin-bottom: 0; }
 }
-"""
-        )
+""")
         self.classes("platformer-input-method-element")
         with self:
             self.mask_element = ui.element("div")
         self.mask_element.style(
             f"width: {c.TILE_SIZE * c.SCENE_WIDTH}px; height: {c.TILE_SIZE * c.SCENE_HEIGHT}px;"
-            f"background-color: {c.COLOR_BG}; position: relative; overflow: hidden"
+            f"background-color: black; position: relative; overflow: hidden"
         )
 
         self.world = c.world_grid()
         self.world_height = len(self.world)
+        self.initial_draw()
+        self.move_player(*position)
 
+    def initial_draw(self) -> None:
+        """Draw the map for the first time."""
         with self.mask_element:
             self.map_container = ui.element("div")
         self.map_container.style(
@@ -73,12 +77,12 @@ class PlatformerSceneComponent(ui.element):
             for row in self.world:
                 for cell in row:
                     if cell in "# ":
-                        ui.element("div").classes("tile-ground" if cell == "#" else "tile-sky")
+                        emoji = EMOJIS["ground"] if cell == "#" else EMOJIS["sky"]
+                        ui.label(emoji).classes("tile")
                     else:
-                        lb = ui.label(cell.replace("_", "Spc").replace("<", "\u232b")).classes("tile-letter")
-                        self.letter_el_map[cell] = lb
-
-        self.move_player(*position)
+                        with ui.label(EMOJIS["letter"]).classes("tile"):
+                            lb = ui.label(cell.replace("<", "\u232b"))
+                            self.letter_el_map[cell] = lb
 
     def move_player(self, player_x: float, player_y: float) -> None:
         """Move the player in the renderer."""

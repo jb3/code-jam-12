@@ -17,9 +17,7 @@ VELOCITY_DECAY_RATE = 10
 """Gravity force"""
 GRAVITY_FORCE = 17
 
-COLOR_BG = "skyblue"
 COLOR_PLAYER = "purple"
-COLOR_GROUND = "#181818"
 
 
 SCENE = """#############################################
