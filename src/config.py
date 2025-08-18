@@ -45,7 +45,12 @@ INPUT_METHODS: list[InputMethodSpec] = [
         "icon": "",
         "component": None,
     },
-    {"name": "Platformer", "path": "platformer", "icon": "", "component": PlatformerInputMethod},
+    {
+        "name": "Platformer",
+        "path": "platformer",
+        "icon": "",
+        "component": PlatformerInputMethod,
+    },
 ]
 
 # COLORS
