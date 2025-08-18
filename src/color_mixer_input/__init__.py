@@ -4,6 +4,7 @@ from functools import partial
 from nicegui import ui
 from nicegui.events import ColorPickEventArguments
 
+import config
 from input_method_proto import IInputMethod, TextUpdateCallback
 
 
@@ -147,7 +148,7 @@ class ColorInputComponent(IInputMethod):
         if self.text_callback:
             self.text_callback(self.typed_text)
 
-    def create_ui_content(self) -> tuple[ui.row, ui.label, ui.label, ui.row, ui.row]:
+    def create_ui_content(self) -> tuple[ui.row, ui.chip, ui.chip, ui.row, ui.row]:
         """Create the frame to hold the color picker, text labels, and buttons.
 
         Returns:
@@ -157,15 +158,23 @@ class ColorInputComponent(IInputMethod):
         with ui.element("div").classes("flex flex-col items-center justify-center w-full h-full"):
             with ui.element("div").classes("flex flex-row justify-center w-1/2 h-full"):
                 color_picker_row = ui.row()
-            with ui.element("div").classes("w-1/2 h-full flex flex-col items-center justify-center gap-4"):
-                with ui.element("div").classes("flex flex-col items-center justify-center gap-4"):
-                    color_label = ui.label("Current Color: None")
-                    input_label = ui.label("Current Input:")
+            with ui.element("div").classes("w-1/2 h-full flex flex-col items-center justify-center gap-16"):
+                with ui.element("div").classes("flex flex-col items-center justify-center gap-2"):
+                    color_chip = ui.chip(
+                        "Current Color: None",
+                        color=config.COLOR_STYLE["contrast"],
+                        text_color=config.COLOR_STYLE["primary_bg"],
+                    )
+                    input_chip = ui.chip(
+                        "Current Input: ",
+                        color=config.COLOR_STYLE["contrast"],
+                        text_color=config.COLOR_STYLE["primary_bg"],
+                    )
                 with ui.element("div").classes("flex flex-col items-center justify-center gap-4"):
                     command_buttons_row = ui.row().style("gap: 10px")
                     special_char_buttons_row = ui.row().style("gap: 10px")
 
-        return color_picker_row, color_label, input_label, command_buttons_row, special_char_buttons_row
+        return color_picker_row, color_chip, input_chip, command_buttons_row, special_char_buttons_row
 
     def setup_ui_buttons(self) -> None:
         """Create the buttons and other dynamic elements (e.g. labels, switches) on page."""
@@ -173,8 +182,12 @@ class ColorInputComponent(IInputMethod):
             ui.color_picker(on_pick=self.color_handler, value=True).props("persistent").classes("w-[300px] h-auto")
 
         with self.command_buttons_row, ui.button_group().classes("gap-1"):
-            ui.switch("CAPS LOCK", on_change=self.shift_handler).classes("bg-blue-500 text-white pr-[10px]")
-            ui.button("Confirm Letter", on_click=self.confirm_letter_handler).classes("bg-blue-500 text-white")
+            ui.switch("CAPS LOCK", on_change=self.shift_handler).classes(
+                f"bg-[{config.COLOR_STYLE['secondary']}] text-white pr-[10px]"
+            )
+            ui.button(
+                "Confirm Letter", on_click=self.confirm_letter_handler, color=config.COLOR_STYLE["secondary"]
+            ).classes("bg-blue-500 text-white")
 
         with self.special_char_buttons_row, ui.button_group().classes("gap-1"):
             # creating wrappers to pass callback functions with parameters to buttons below
@@ -183,10 +196,14 @@ class ColorInputComponent(IInputMethod):
             callback_with_comma = partial(self.special_character_handler, ",")
             callback_with_question_mark = partial(self.special_character_handler, "?")
 
-            ui.button(".", on_click=callback_with_period).classes("bg-blue-500 text-white")
-            ui.button("!", on_click=callback_with_exclamation).classes("bg-blue-500 text-white")
-            ui.button(",", on_click=callback_with_comma).classes("bg-blue-500 text-white")
-            ui.button("?", on_click=callback_with_question_mark).classes("bg-blue-500 text-white")
+            ui.button(".", on_click=callback_with_period, color=config.COLOR_STYLE["secondary"]).classes("text-white")
+            ui.button("!", on_click=callback_with_exclamation, color=config.COLOR_STYLE["secondary"]).classes(
+                "text-white"
+            )
+            ui.button(",", on_click=callback_with_comma, color=config.COLOR_STYLE["secondary"]).classes("text-white")
+            ui.button("?", on_click=callback_with_question_mark, color=config.COLOR_STYLE["secondary"]).classes(
+                "text-white"
+            )
 
     @ui.page("/color_input")
     def color_input_page(self) -> None:
