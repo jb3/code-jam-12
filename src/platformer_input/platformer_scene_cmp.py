@@ -5,7 +5,7 @@ import platformer_input.platformer_constants as c
 EMOJIS = {"sky": "\U0001f600", "ground": "\U0001f61e", "letter": "\U0001f636"}
 
 
-class PlatformerSceneComponent(ui.element):
+class PlatformerRendererComponent(ui.element):
     """Displays the characters and scene within the game."""
 
     mask_element: ui.element
