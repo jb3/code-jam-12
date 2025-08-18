@@ -21,6 +21,9 @@ class PlatformerRendererComponent(ui.element):
     margin-left: -7px;
     border-radius: 5px;
 }
+.platformer-input-method-element.capitalization .tile div {
+    text-transform: uppercase;
+}
 .platformer-input-method-element .tile.fade {
     opacity: 60%;
 }
@@ -54,10 +57,10 @@ class PlatformerRendererComponent(ui.element):
 
         self.world = c.world_grid()
         self.world_height = len(self.world)
-        self.initial_draw()
-        self.move_player(*position)
+        self._initial_draw()
+        self.rerender(*position, True)
 
-    def initial_draw(self) -> None:
+    def _initial_draw(self) -> None:
         """Draw the map for the first time."""
         with self.mask_element:
             self.map_container = ui.element("div")
@@ -94,12 +97,13 @@ class PlatformerRendererComponent(ui.element):
                             lb = ui.label(cell.replace("<", "\u232b"))
                             self.letter_el_map[cell] = lb
 
-    def move_player(self, player_x: float, player_y: float) -> None:
+    def rerender(self, player_x: float, player_y: float, capitalization_state: bool) -> None:
         """Move the player in the renderer."""
         px_left = self.px_player_offset_lx - player_x * c.TILE_SIZE
         px_top = self.px_player_offset_ty - player_y * c.TILE_SIZE
 
         self.map_container.style(f"transform: translate({px_left}px, {px_top}px)")
+        self.classes("capitalization") if capitalization_state else self.classes(remove="capitalization")
 
     def play_bounce_effect(self, letter: str) -> None:
         """Play a short bounce effect on a letter tile."""
