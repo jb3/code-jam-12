@@ -42,7 +42,7 @@ class PlatformerRendererComponent(ui.element):
         self.classes("platformer-input-method-element flex items-center justify-center")
         with self:
             self.mask_element = ui.element("div").classes(
-                f"rounded-3xl m-4 border-4 border-[{config.COLOR_STYLE['primary']}] "
+                f"rounded-3xl m-4 border-4 border-[{config.COLOR_STYLE['primary']}] border-double "
             )
         self.mask_element.style(
             f"width: {c.TILE_SIZE * c.SCENE_WIDTH}px; height: {c.TILE_SIZE * c.SCENE_HEIGHT}px;"
@@ -57,7 +57,7 @@ class PlatformerRendererComponent(ui.element):
     def initial_draw(self) -> None:
         """Draw the map for the first time."""
         with self.mask_element:
-            self.map_container = ui.element("div").classes("shadow-cyan-500/50 ")
+            self.map_container = ui.element("div")
         self.map_container.style(
             f"position:absolute;width:{len(self.world[0]) * c.TILE_SIZE}px;"
             f"height:{len(self.world) * c.TILE_SIZE}px;"
