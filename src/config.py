@@ -1,6 +1,7 @@
 from typing import TypedDict
 
 from audio_style_input import AudioEditorComponent
+from color_mixer_input import ColorInputComponent
 from input_method_proto import IInputMethod
 from rpg_text_input import Keyboard
 
@@ -35,7 +36,7 @@ INPUT_METHODS: list[InputMethodSpec] = [
         "name": "Color Picker",
         "path": "color-picker",
         "icon": "",
-        "component": None,
+        "component": ColorInputComponent,
     },
     {
         "name": "Circle Selector",
