@@ -35,7 +35,7 @@ class PlatformerPhysicsSimulation:
 
     _keys: set[str]
     _world: list[list[str]]
-    _letter_handler: LetterHandler | None
+    _letter_handlers: list[LetterHandler]
 
     def __init__(self, initial: tuple[int, int]) -> None:
         self.player_x, self.player_y = initial
@@ -47,7 +47,7 @@ class PlatformerPhysicsSimulation:
 
         self._keys = set()
         self._world = constants.world_grid()
-        self._letter_handler = None
+        self._letter_handlers = []
 
     def set_held_keys(self, keys: set[str]) -> None:
         """Set the current player-held keys."""
@@ -75,7 +75,7 @@ class PlatformerPhysicsSimulation:
 
     def on_letter(self, handler: LetterHandler) -> None:
         """Register callback function for a letter being bumped."""
-        self._letter_handler = handler
+        self._letter_handlers.append(handler)
 
     def _apply_x_velocity(self) -> None:
         """Apply horizontal velocity and decay."""
@@ -111,8 +111,8 @@ class PlatformerPhysicsSimulation:
                 else:
                     tile_edge = int(self.player_y)
                     new_y = tile_edge + EPSILON
-                    if collision_result != "#" and self._letter_handler:
-                        self._letter_handler(collision_result)
+                    if collision_result != "#":
+                        [x(collision_result) for x in self._letter_handlers]
             self.player_y = new_y
 
     def _collides(self, player: tuple[float, float]) -> bool:
