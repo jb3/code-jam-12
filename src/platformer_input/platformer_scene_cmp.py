@@ -38,7 +38,7 @@ class PlatformerRendererComponent(ui.element):
     100% { margin-top: 0; margin-bottom: 0; }
 }
 """)
-        self.classes("platformer-input-method-element")
+        self.classes("platformer-input-method-element flex items-center justify-center")
         with self:
             self.mask_element = ui.element("div")
         self.mask_element.style(
