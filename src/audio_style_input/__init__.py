@@ -54,12 +54,12 @@ class AudioEditorComponent(IInputMethod):
 
         """
         intro_card = ui.card().classes(
-            f"w-full h-full flex justify-center items-center bg-[{config.COLOR_STYLE['secondary']}]"
+            f"w-full h-full flex justify-center items-center bg-[{config.COLOR_STYLE['secondary_bg']}]"
         )
         with intro_card, ui.card().classes("no-shadow justify-center items-center"):
             ui.label("WPM Battle: DJ Edition").classes("text-5xl font-bold")
             ui.label("Use an audio editor to test your typing skills").classes("text-xl")
-            start_button = ui.button("Get started!", color=config.COLOR_STYLE["secondary"])
+            start_button = ui.button("Get started!", color=config.COLOR_STYLE["primary"])
         return intro_card, start_button
 
     def create_main_content(self) -> tuple[ui.column, ui.image, ui.chip, ui.row, ui.row]:
@@ -74,23 +74,25 @@ class AudioEditorComponent(IInputMethod):
             main_content,
             ui.card().classes(
                 f"gap-4 w-full h-full flex flex-col justify-center items-center "
-                f"bg-[{config.COLOR_STYLE['secondary']}] px-16"
+                f"bg-[{config.COLOR_STYLE['secondary_bg']}] px-16"
             ),
+            ui.element("div").classes("flex flex-row w-full justify-between"),
         ):
-            with ui.element("div").classes("w-full flex justify-center items-center"):
-                chip = ui.chip(text="Current letter: A", color=f"{config.COLOR_STYLE['contrast']}").classes("text-2xl")
-            with ui.element("div").classes("flex flex-row w-full justify-between"):
-                with ui.element("div").classes("flex flex-col w-1/2 h-full justify-center items-center gap-4"):
-                    record = (
-                        ui.image(
-                            "/media/images/record.png",
-                        )
-                        .style("transition: transform 0.05s linear;")
-                        .classes("w-1/2")
+            with ui.element("div").classes("flex flex-col w-1/2 h-full justify-center items-center gap-4"):
+                chip = ui.chip(text="Current letter: A", color=f"{config.COLOR_STYLE['contrast']}").classes(
+                    "relative text-2xl top-[-100px]"
+                )
+                buttons_row = ui.row().style("gap: 10px")
+                buttons_row_2 = ui.row().style("gap: 10x")
+
+            with ui.element("div").classes("flex flex-col w-1/2 h-full justify-center items-center gap-4"):
+                record = (
+                    ui.image(
+                        "/media/images/record.png",
                     )
-                with ui.element("div").classes("flex flex-col w-1/2 h-full justify-center items-center gap-4"):
-                    buttons_row = ui.row().style("gap: 10px")
-                    buttons_row_2 = ui.row().style("gap: 10x")
+                    .style("transition: transform 0.05s linear;")
+                    .classes("w-1/2")
+                )
 
         return main_content, record, chip, buttons_row, buttons_row_2
 
