@@ -1,9 +1,10 @@
 import secrets
 import time
 from dataclasses import dataclass
+from pathlib import Path
 
 from faker import Faker
-from nicegui import ui
+from nicegui import app, ui
 
 import input_method_proto
 import input_view
@@ -11,6 +12,9 @@ from color_style import ColorStyle
 from config import INPUT_METHODS, PROJECT_NAME
 
 COLOR_STYLE = ColorStyle()
+
+media = Path("./static")
+app.add_media_files("/media", media)
 
 fake = Faker()
 
@@ -48,8 +52,8 @@ def create_header() -> None:
         .style(f"background-color: {COLOR_STYLE.secondary_bg}")
         .classes("flex items-center justify-between h-[8vh] py-0 px-4")
     ):
-        with ui.card().props("flat"):  # small logo placeholder
-            pass
+        with ui.link(target="/").classes("w-[30px] h-auto"):
+            ui.image("/media/images/logo-icon.png")
         (
             ui.link(PROJECT_NAME.upper(), "/")
             .style(f"color: {COLOR_STYLE.primary}; font-family: Arial, sans-serif; text-decoration: none")

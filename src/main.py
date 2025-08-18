@@ -6,4 +6,4 @@ from wpm_tester import wpm_tester_page
 ui.page("/")(home)
 ui.page("/test/{method}")(wpm_tester_page)
 
-ui.run()
+ui.run(title="Dynamic Typing", favicon="./static/images/favicon.ico")
