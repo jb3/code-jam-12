@@ -3,9 +3,16 @@ from functools import partial
 
 from nicegui import ui
 from nicegui.events import ColorPickEventArguments
+from src.input_method_proto import IInputMethod, TextUpdateCallback
 
-import config
-from input_method_proto import IInputMethod, TextUpdateCallback
+# COLORS
+COLOR_STYLE: dict[str, str] = {
+    "primary": "#12E7B2",
+    "secondary": "#7D53DE",
+    "primary_bg": "#111111",
+    "secondary_bg": "#1B1B1B",
+    "contrast": "#F9F9F9",
+}
 
 
 class ColorInputComponent(IInputMethod):
@@ -16,8 +23,6 @@ class ColorInputComponent(IInputMethod):
     """
 
     def __init__(self) -> None:
-        # typed_char is input displayed to user based on selected color
-        # confirmed_char is character typed after user confirmation
         self.text_callback: TextUpdateCallback | None = None
         self.typed_text = ""
         self.typed_char = None
@@ -103,7 +108,6 @@ class ColorInputComponent(IInputMethod):
         Letters must be confirmed by the user before being output to the WPM page. Special characters are automatically
         output to the WPM page.
         """
-        print(type(element))
         selected_color_hex = element.color
         self.selected_color = self.find_closest_member(selected_color_hex)
 
@@ -162,13 +166,13 @@ class ColorInputComponent(IInputMethod):
                 with ui.element("div").classes("flex flex-col items-center justify-center gap-2"):
                     color_chip = ui.chip(
                         "Current Color: None",
-                        color=config.COLOR_STYLE["contrast"],
-                        text_color=config.COLOR_STYLE["primary_bg"],
+                        color=COLOR_STYLE["contrast"],
+                        text_color=COLOR_STYLE["primary_bg"],
                     )
                     input_chip = ui.chip(
                         "Current Input: ",
-                        color=config.COLOR_STYLE["contrast"],
-                        text_color=config.COLOR_STYLE["primary_bg"],
+                        color=COLOR_STYLE["contrast"],
+                        text_color=COLOR_STYLE["primary_bg"],
                     )
                 with ui.element("div").classes("flex flex-col items-center justify-center gap-4"):
                     command_buttons_row = ui.row().style("gap: 10px")
@@ -183,11 +187,11 @@ class ColorInputComponent(IInputMethod):
 
         with self.command_buttons_row, ui.button_group().classes("gap-1"):
             ui.switch("CAPS LOCK", on_change=self.shift_handler).classes(
-                f"bg-[{config.COLOR_STYLE['secondary']}] text-white pr-[10px]"
+                f"bg-[{COLOR_STYLE['secondary']}] text-white pr-[10px]"
             )
-            ui.button(
-                "Confirm Letter", on_click=self.confirm_letter_handler, color=config.COLOR_STYLE["secondary"]
-            ).classes("bg-blue-500 text-white")
+            ui.button("Confirm Letter", on_click=self.confirm_letter_handler, color=COLOR_STYLE["secondary"]).classes(
+                "bg-blue-500 text-white"
+            )
 
         with self.special_char_buttons_row, ui.button_group().classes("gap-1"):
             # creating wrappers to pass callback functions with parameters to buttons below
@@ -196,14 +200,10 @@ class ColorInputComponent(IInputMethod):
             callback_with_comma = partial(self.special_character_handler, ",")
             callback_with_question_mark = partial(self.special_character_handler, "?")
 
-            ui.button(".", on_click=callback_with_period, color=config.COLOR_STYLE["secondary"]).classes("text-white")
-            ui.button("!", on_click=callback_with_exclamation, color=config.COLOR_STYLE["secondary"]).classes(
-                "text-white"
-            )
-            ui.button(",", on_click=callback_with_comma, color=config.COLOR_STYLE["secondary"]).classes("text-white")
-            ui.button("?", on_click=callback_with_question_mark, color=config.COLOR_STYLE["secondary"]).classes(
-                "text-white"
-            )
+            ui.button(".", on_click=callback_with_period, color=COLOR_STYLE["secondary"]).classes("text-white")
+            ui.button("!", on_click=callback_with_exclamation, color=COLOR_STYLE["secondary"]).classes("text-white")
+            ui.button(",", on_click=callback_with_comma, color=COLOR_STYLE["secondary"]).classes("text-white")
+            ui.button("?", on_click=callback_with_question_mark, color=COLOR_STYLE["secondary"]).classes("text-white")
 
     @ui.page("/color_input")
     def color_input_page(self) -> None:
@@ -242,8 +242,6 @@ class ColorInputComponent(IInputMethod):
         # ui labels displaying selected color, last input character, and text typed by user
         self.color_label.text = f"Color Selected: {self.selected_color}"
         self.input_label.text = f"Character Selected: {self.typed_char}"
-        self.confirm_label.text = f"Character Typed: {self.confirmed_char}"
-        self.text_label.text = f"Text Typed: {self.typed_text}"
 
         with ui.row(), ui.button(icon="colorize").style("opacity:0;pointer-events:none"):
             ui.color_picker(on_pick=self.color_handler, value=True).props("persistent")
