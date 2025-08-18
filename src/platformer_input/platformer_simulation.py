@@ -26,7 +26,6 @@ class PlatformerPhysicsSimulation:
 
     player_x: float
     player_y: float
-    capitalized: bool
 
     _xvel: float
     _yvel: float
@@ -40,7 +39,6 @@ class PlatformerPhysicsSimulation:
 
     def __init__(self, initial: tuple[int, int]) -> None:
         self.player_x, self.player_y = initial
-        self.capitalized = False
         self._xvel = 0
         self._yvel = 0
 
@@ -71,7 +69,6 @@ class PlatformerPhysicsSimulation:
             self._xvel = max(-constants.MOV_SPEED, self._xvel - delta_accel)
         if "ArrowUp" in self._keys and self._collides((self.player_x, self.player_y + 2 * EPSILON)):
             self._yvel = -constants.JUMP_FORCE
-            self.capitalized = not self.capitalized
 
         self._apply_x_velocity()
         self._apply_y_velocity()
@@ -115,14 +112,7 @@ class PlatformerPhysicsSimulation:
                     tile_edge = int(self.player_y)
                     new_y = tile_edge + EPSILON
                     if collision_result != "#":
-                        [
-                            x(
-                                collision_result.capitalize()
-                                if self.capitalized and collision_result.isalpha()
-                                else collision_result
-                            )
-                            for x in self._letter_handlers
-                        ]
+                        [x(collision_result) for x in self._letter_handlers]
             self.player_y = new_y
 
     def _collides(self, player: tuple[float, float]) -> bool:
