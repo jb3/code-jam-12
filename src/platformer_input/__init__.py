@@ -7,7 +7,6 @@ import input_method_proto
 from platformer_input.platformer_scene_cmp import PlatformerRendererComponent
 from platformer_input.platformer_simulation import PlatformerPhysicsSimulation
 
-ALLOWED_KEYS = ("ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Shift", " ", "Enter")
 INITIAL_POS = (1, 10)
 FPS = 60
 
@@ -38,8 +37,8 @@ class PlatformerInputMethod(input_method_proto.IInputMethod):
 
     def keyboard_handler(self, event: nicegui.events.KeyEventArguments) -> None:
         """Call with the nicegui keyboard callback."""
-        evk = str(event.key)
-        if event.action.repeat or evk not in ALLOWED_KEYS:
+        evk = event.key.code
+        if event.action.repeat:
             return
 
         if event.action.keydown:
