@@ -4,6 +4,7 @@ from pathlib import Path
 
 from nicegui import app, ui
 
+import config
 from input_method_proto import IInputMethod, TextUpdateCallback
 
 media = Path("./static")
@@ -52,34 +53,46 @@ class AudioEditorComponent(IInputMethod):
             tuple: (intro_card, start_button)
 
         """
-        intro_card = ui.card().classes("w-[100vw] h-[50vh] flex justify-center items-center bg-[#2b87d1]")
+        intro_card = ui.card().classes(
+            f"w-full h-full flex justify-center items-center bg-[{config.COLOR_STYLE['secondary']}]"
+        )
         with intro_card, ui.card().classes("no-shadow justify-center items-center"):
-            ui.label("WPM Battle: DJ Edition").classes("text-[86px]")
-            ui.label("Use an audio editor to test your typing skills").classes("text-[28px]")
-            start_button = ui.button("Get started!", color="#ff9900")
+            ui.label("WPM Battle: DJ Edition").classes("text-5xl font-bold")
+            ui.label("Use an audio editor to test your typing skills").classes("text-xl")
+            start_button = ui.button("Get started!", color=config.COLOR_STYLE["secondary"])
         return intro_card, start_button
 
-    def create_main_content(self) -> tuple[ui.column, ui.image, ui.label, ui.row]:
+    def create_main_content(self) -> tuple[ui.column, ui.image, ui.chip, ui.row, ui.row]:
         """Create main content with record image, letter label, and button row.
 
         Returns:
             tuple: (main_content container, record image, label, buttons row)
 
         """
-        main_content = ui.column().classes("items-center gap-4 #2b87d1").style("display:none")
+        main_content = ui.column().classes("w-full h-full items-center gap-4 #2b87d1").style("display:none")
         with (
             main_content,
             ui.card().classes(
-                "gap-8 w-[100vw] h-[75vh] flex flex-col justify-center items-center bg-[#2b87d1]",
+                f"gap-4 w-full h-full flex flex-col justify-center items-center "
+                f"bg-[{config.COLOR_STYLE['secondary']}] px-16"
             ),
         ):
-            record = ui.image(
-                "/media/images/record.png",
-            ).style("width: 300px; transition: transform 0.05s linear;")
-            label = ui.label("Current letter: A")
-            buttons_row = ui.row().style("gap: 10px")
-            buttons_row_2 = ui.row().style("gap: 10x")
-        return main_content, record, label, buttons_row, buttons_row_2
+            with ui.element("div").classes("w-full flex justify-center items-center"):
+                chip = ui.chip(text="Current letter: A", color=f"{config.COLOR_STYLE['contrast']}").classes("text-2xl")
+            with ui.element("div").classes("flex flex-row w-full justify-between"):
+                with ui.element("div").classes("flex flex-col w-1/2 h-full justify-center items-center gap-4"):
+                    record = (
+                        ui.image(
+                            "/media/images/record.png",
+                        )
+                        .style("transition: transform 0.05s linear;")
+                        .classes("w-1/2")
+                    )
+                with ui.element("div").classes("flex flex-col w-1/2 h-full justify-center items-center gap-4"):
+                    buttons_row = ui.row().style("gap: 10px")
+                    buttons_row_2 = ui.row().style("gap: 10x")
+
+        return main_content, record, chip, buttons_row, buttons_row_2
 
     def cycle_char_select(self) -> None:
         """Select character set from Capital, Lower, and Special characters."""
