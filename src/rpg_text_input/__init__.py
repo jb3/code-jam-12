@@ -93,8 +93,8 @@ class Keyboard(IInputMethod):
                     ):
                         (
                             ui.label(char)
-                            .style("font-size: clamp(1rem, 2vh, 2rem)")
-                            .classes(f"text-center font-bold text-[{config.COLOR_STYLE['contrast']}] p-2")
+                            .style("font-size: clamp(1rem, 3vh, 3rem)")
+                            .classes(f"text-center text-[{config.COLOR_STYLE['contrast']}] p-2")
                         )
 
     def move(self, x: int, y: int) -> None:
