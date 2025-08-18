@@ -69,4 +69,8 @@ ignore = [
     "FIX",
     # Conflicts with formatter.
     "COM812",
+    # Boolean positional arguments
+    "FBT001",
+    "FBT002",
+    "FBT003",
 ]

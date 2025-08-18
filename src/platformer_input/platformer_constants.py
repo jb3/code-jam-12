@@ -45,7 +45,7 @@ def world_grid() -> list[list[str]]:
     lines = SCENE.splitlines()
     max_length = max(len(ln) for ln in lines)
 
-    grid = []
+    grid: list[list[str]] = []
     for line in lines:
         lst = list(line)
         if len(line) < max_length:
