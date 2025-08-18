@@ -127,7 +127,7 @@ def setup(
         iv.set_text(txt)
         state.text = txt
 
-        if len(txt) == len(text_to_use):
+        if txt == text_to_use:
             elapsed = time.time() - timer.start if timer.start else 0
             if elapsed > 0:
                 wpm = (len(txt) / 5) / (elapsed / 60)
