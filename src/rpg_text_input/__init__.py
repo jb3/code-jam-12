@@ -56,10 +56,6 @@ class Keyboard(IInputMethod):
     r"""A RPG-style keyboard where characters are selected by navigating with wasd/the arror keys.
 
     Positions are stored internally as (col, row).
-
-    Raises:
-        ValueError: If input keys is non-rectangular (jagged) or starting position is outside keys.
-
     """
 
     def __init__(self) -> None:
