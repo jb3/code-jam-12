@@ -1,27 +1,24 @@
 import asyncio
 import string
-from collections.abc import Callable
 from pathlib import Path
+from typing import override
 
 from nicegui import app, ui
 
-import input_method_proto
+import config
+from input_method_proto import IInputMethod, TextUpdateCallback
 
 media = Path("./static")
 app.add_media_files("/media", media)
 
-capital_letters = [chr(i) for i in range(ord("A"), ord("Z") + 1)]
-lowercase_letters = [chr(i) for i in range(ord("a"), ord("z") + 1)]
-special_chars = list(string.punctuation)
-
-char_selection = [capital_letters, lowercase_letters, special_chars]
+char_selection = [string.ascii_uppercase, string.ascii_lowercase, string.punctuation]
 
 
-class AudioEditorComponent(input_method_proto.IInputMethod):
+class AudioEditorComponent(IInputMethod):
     """Render the audio editor page with spinning record and letter spinner."""
 
     def __init__(self) -> None:
-        self._text_update_callback: Callable[[str], None] | None = None
+        self._text_update_callback: TextUpdateCallback | None = None
         self.current_char_selection_index_container = [0]
         self.current_chars_selected = char_selection[0]
         self.current_letter_index_container = [0]
@@ -57,34 +54,48 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
             tuple: (intro_card, start_button)
 
         """
-        intro_card = ui.card().classes("w-[100vw] h-[50vh] flex justify-center items-center bg-[#d18b2b]")
+        intro_card = ui.card().classes(
+            f"w-full h-full flex justify-center items-center bg-[{config.COLOR_STYLE['secondary_bg']}]"
+        )
         with intro_card, ui.card().classes("no-shadow justify-center items-center"):
-            ui.label("WPM Battle: DJ Edition").classes("text-[86px]")
-            ui.label("Use an audio editor to test your typing skills").classes("text-[28px]")
-            start_button = ui.button("Get started!", color="#ff9900")
+            ui.label("WPM Battle: DJ Edition").classes("text-5xl font-bold")
+            ui.label("Use an audio editor to test your typing skills").classes("text-xl")
+            start_button = ui.button("Get started!", color=config.COLOR_STYLE["primary"])
         return intro_card, start_button
 
-    def create_main_content(self) -> tuple[ui.column, ui.image, ui.label, ui.row]:
+    def create_main_content(self) -> tuple[ui.column, ui.image, ui.chip, ui.row, ui.row]:
         """Create main content with record image, letter label, and button row.
 
         Returns:
             tuple: (main_content container, record image, label, buttons row)
 
         """
-        main_content = ui.column().classes("items-center gap-4 #2b87d1").style("display:none")
+        main_content = ui.column().classes("w-full h-full items-center gap-4 #2b87d1").style("display:none")
         with (
             main_content,
             ui.card().classes(
-                "gap-8 w-[100vw] h-[50vh] flex flex-col justify-center items-center bg-[#2b87d1]",
+                f"gap-4 w-full h-full flex flex-col justify-center items-center "
+                f"bg-[{config.COLOR_STYLE['secondary_bg']}] px-16"
             ),
+            ui.element("div").classes("flex flex-row w-full justify-between"),
         ):
-            record = ui.image(
-                "/media/images/record.png",
-            ).style("width: 300px; transition: transform 0.05s linear;")
-            label = ui.label("Current letter: A")
-            buttons_row = ui.row().style("gap: 10px")
-            buttons_row_2 = ui.row().style("gap: 10x")
-        return main_content, record, label, buttons_row, buttons_row_2
+            with ui.element("div").classes("flex flex-col w-1/2 h-full justify-center items-center gap-4"):
+                chip = ui.chip(text="Current letter: A", color=f"{config.COLOR_STYLE['contrast']}").classes(
+                    "relative text-2xl top-[-100px]"
+                )
+                buttons_row = ui.row().style("gap: 10px")
+                buttons_row_2 = ui.row().style("gap: 10x")
+
+            with ui.element("div").classes("flex flex-col w-1/2 h-full justify-center items-center gap-4"):
+                record = (
+                    ui.image(
+                        "/media/images/record.png",
+                    )
+                    .style("transition: transform 0.05s linear;")
+                    .classes("w-1/2")
+                )
+
+        return main_content, record, chip, buttons_row, buttons_row_2
 
     def cycle_char_select(self) -> None:
         """Select character set from Capital, Lower, and Special characters."""
@@ -223,11 +234,12 @@ class AudioEditorComponent(input_method_proto.IInputMethod):
         self.intro_card.style("display:none")
         self.main_content.style("display:flex")
 
-    def on_text_update(self, callback: Callable[[str], None]) -> None:
+    @override
+    def on_text_update(self, callback: TextUpdateCallback) -> None:
         """Register a callback to be called whenever the text updates.
 
         Args:
-            callback (Callable[[str], None]): Function called with updated text.
+            callback (TextUpdateCallback): Function called with updated text.
 
         """
         self._text_update_callback = callback

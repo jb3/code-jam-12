@@ -1,11 +1,25 @@
+from typing import TypedDict
+
 from audio_style_input import AudioEditorComponent
+from input_method_proto import IInputMethod
 from platformer_input import PlatformerInputMethod
+from rpg_text_input import Keyboard
 
 PROJECT_NAME: str = "Dynamic Typing"
 PROJECT_DESCRIPTION: str = "How fast can you type?"
 
+
+class InputMethodSpec(TypedDict):
+    """Specifications for an input method to be added to the main page."""
+
+    name: str
+    path: str
+    icon: str
+    component: type[IInputMethod] | None
+
+
 # INPUT METHODS
-INPUT_METHODS: list[dict] = [
+INPUT_METHODS: list[InputMethodSpec] = [
     {
         "name": "Record Player",
         "path": "audio-input",
@@ -16,7 +30,7 @@ INPUT_METHODS: list[dict] = [
         "name": "WASD",
         "path": "wasd",
         "icon": "",
-        "component": None,
+        "component": Keyboard,
     },
     {
         "name": "Color Picker",
@@ -34,9 +48,10 @@ INPUT_METHODS: list[dict] = [
 ]
 
 # COLORS
-COLOR_STYLE: dict = {
-    "PRIMARY": "",
-    "SECONDARY": "",
-    "PRIMARY_BG": "",
-    "SECONDARY_BG": "",
+COLOR_STYLE: dict[str, str] = {
+    "primary": "#12E7B2",
+    "secondary": "#7D53DE",
+    "primary_bg": "#111111",
+    "secondary_bg": "#1B1B1B",
+    "contrast": "#E9E9E9",
 }

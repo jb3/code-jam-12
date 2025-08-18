@@ -1,9 +1,12 @@
-import typing
+from collections.abc import Callable
+from typing import Protocol
+
+type TextUpdateCallback = Callable[[str], None]
 
 
-class IInputMethod(typing.Protocol):
+class IInputMethod(Protocol):
     """An interface for any input method renderable in the WPM test page."""
 
-    def on_text_update(self, callback: typing.Callable[[str], None]) -> None:
+    def on_text_update(self, callback: TextUpdateCallback) -> None:
         """Call `callback` every time the user input changes."""
         raise NotImplementedError

@@ -1,3 +1,4 @@
+import string
 from functools import partial
 
 from nicegui import ui
@@ -12,12 +13,16 @@ class ColorInputManager:
     """
 
     def __init__(self) -> None:
+        # typed_char is input displayed to user based on selected color
+        # confirmed_char is character typed after user confirmation
         self.typed_text = ""
         self.typed_char = None
+        self.confirmed_char = None
         self.selected_color = None
         self.shift_key_on = False
         self.color_label = ui.label("None")
         self.input_label = ui.label("None")
+        self.confirm_label = ui.label("None")
         self.text_label = ui.label("None")
         self.color_dict = {
             "aqua": "#00FFFF",
@@ -56,9 +61,23 @@ class ColorInputManager:
         This function handles special characters (e.g. '.', '!', ',', '?'). These characters are input using ui.button
         elements.
         """
+        self.selected_color = None
         self.typed_text += char
         self.typed_char = char
-        self.update_text(self.typed_text, "None", char)
+        self.confirmed_char = char
+        self.update_helper_text()
+        self.update_confirmation_text()
+
+    def confirm_letter_handler(self) -> None:
+        """Handle event when user clicks 'Confirm Letter'.
+
+        After user clicks confirm, letter is typed and text displays update.
+        """
+        alphabet = string.ascii_letters
+        if self.typed_char in alphabet:
+            self.confirmed_char = self.typed_char
+            self.typed_text += self.confirmed_char
+        self.update_confirmation_text()
 
     def color_handler(self, element: ColorPickEventArguments) -> None:
         """Handle events when user selects a color.
@@ -70,41 +89,48 @@ class ColorInputManager:
         print(type(element))
         selected_color_hex = element.color
         self.selected_color = self.find_closest_member(selected_color_hex)
+
         if self.selected_color == "black":
             self.typed_char = "backspace"
             if len(self.typed_text) > 0:
                 self.typed_text = self.typed_text[:-1]
+            self.confirmed_char = self.typed_char
         elif self.selected_color == "white":
-            self.typed_char = "space"
             self.typed_text += " "
+            self.typed_char = "space"
+            self.confirmed_char = self.typed_char
+        elif self.shift_key_on:
+            self.typed_char = self.selected_color[0].upper()
         else:
-            if self.shift_key_on:
-                self.typed_char = self.selected_color[0].upper()
-            else:
-                self.typed_char = self.selected_color[0]
-            self.typed_text += self.typed_char
-        self.update_text(self.typed_text, self.selected_color, self.typed_char)
+            self.typed_char = self.selected_color[0]
+
+        if self.typed_char in ["backspace", "space"]:
+            self.update_confirmation_text()
+        self.update_helper_text()
 
     def shift_handler(self) -> None:
         """Switch shift key on/off. The color_handler() method deals with capitalizing output."""
         self.shift_key_on = not self.shift_key_on
 
-    def update_text(self, typed_txt: str, color_txt: str, input_txt: str) -> None:
-        """Update text on page.
+    def update_helper_text(self) -> None:
+        """Update helper text on page.
 
-        Page displays the last color selected, the last character input, and the current string user has typed. If a
-        special character was selected the last color selected is "None."
-
-        :param typed_txt: string representing what user has typed so far
-        :param color_txt: last color selected by user
-        :param input_txt: last character input by user
-        :return: None
+        Displays the color and current character selected by the user based on an event."
         """
-        self.color_label.text = f"Selected Color: {color_txt}"
-        self.input_label.text = f"Previous Input: {input_txt}"
-        self.text_label.text = f"Typed Text: {typed_txt}"
+        self.color_label.text = f"Color Selected: {self.selected_color}"
+        self.input_label.text = f"Character Selected: {self.typed_char}"
         self.color_label.update()
         self.input_label.update()
+
+    def update_confirmation_text(self) -> None:
+        """Update confirmed text on page.
+
+        Display the confirmed character selected and all confirmed text typed thus far."
+
+        """
+        self.confirm_label.text = f"Character Typed: {self.confirmed_char}"
+        self.text_label.text = f"Text Typed: {self.typed_text}"
+        self.confirm_label.update()
         self.text_label.update()
 
     @ui.page("/color_input")
@@ -117,6 +143,7 @@ class ColorInputManager:
             ui.label("Special Keys:").style("font-weight:bold")
             ui.separator().style("opacity:0")
             ui.switch("CAPS LOCK", on_change=self.shift_handler)
+            ui.button("Confirm Letter", on_click=self.confirm_letter_handler)
             ui.separator().props("color = black")
 
             # creating wrappers to pass callback functions with parameters to buttons below
@@ -137,9 +164,10 @@ class ColorInputManager:
             ui.label("Something could go here also")
 
         # ui labels displaying selected color, last input character, and text typed by user
-        self.color_label.text = f"Selected Color: {self.selected_color}"
-        self.input_label.text = f"Previous Input: {self.typed_char}"
-        self.text_label.text = f"Typed Text: {self.typed_text}"
+        self.color_label.text = f"Color Selected: {self.selected_color}"
+        self.input_label.text = f"Character Selected: {self.typed_char}"
+        self.confirm_label.text = f"Character Typed: {self.confirmed_char}"
+        self.text_label.text = f"Text Typed: {self.typed_text}"
 
         with ui.row(), ui.button(icon="colorize").style("opacity:0;pointer-events:none"):
             ui.color_picker(on_pick=self.color_handler, value=True).props("persistent")
