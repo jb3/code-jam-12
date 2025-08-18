@@ -143,7 +143,6 @@ def create_sentence() -> str:
     """Create sentence to use in challenge."""
     punctuation = [".", "!"]
     sentence = fake.sentence(nb_words=6, variable_nb_words=False)
-    sentence[:-1] + secrets.choice(punctuation)
     return sentence[:-1] + secrets.choice(punctuation)
 
 
