@@ -43,7 +43,7 @@ class PlatformerSceneComponent(ui.element):
             self.mask_element = ui.element("div")
         self.mask_element.style(
             f"width: {c.TILE_SIZE * c.SCENE_WIDTH}px; height: {c.TILE_SIZE * c.SCENE_HEIGHT}px;"
-            f"background-color: {c.COLOR_BG}; position: relative; overflow: hidden; border: 2px solid black"
+            f"background-color: {c.COLOR_BG}; position: relative; overflow: hidden"
         )
 
         self.world = c.world_grid()
@@ -56,6 +56,7 @@ class PlatformerSceneComponent(ui.element):
             f"height:{len(self.world) * c.TILE_SIZE}px;"
             f"display:grid;grid-template-columns:repeat({len(self.world[0])}, {c.TILE_SIZE}px);"
             f"grid-template-rows:repeat({len(self.world)}, {c.TILE_SIZE}px);"
+            "left: 0; top: 0;"
         )
 
         self.px_player_offset_lx = ((c.SCENE_WIDTH - 1) * c.TILE_SIZE) / 2
@@ -82,10 +83,9 @@ class PlatformerSceneComponent(ui.element):
     def move_player(self, player_x: float, player_y: float) -> None:
         """Move the player in the renderer."""
         px_left = self.px_player_offset_lx - player_x * c.TILE_SIZE
-        self.map_container.style(f"left:{px_left}px")
-
         px_top = self.px_player_offset_ty - player_y * c.TILE_SIZE
-        self.map_container.style(f"top:{px_top}px")
+
+        self.map_container.style(f"transform: translate({px_left}px, {px_top}px)")
 
     def play_bounce_effect(self, letter: str) -> None:
         """Play a short bounce effect on a letter tile."""
