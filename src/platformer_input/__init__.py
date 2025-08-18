@@ -28,8 +28,8 @@ class PlatformerInputMethod(input_method_proto.IInputMethod):
         self.callbacks = []
         self.input_value = ""
         self.renderer = PlatformerRendererComponent(INITIAL_POS)
-        self.physics = PlatformerPhysicsSimulation(INITIAL_POS)
-        self.physics.on_letter(self._hphysics_letter_press)
+        self.simulation = PlatformerPhysicsSimulation(INITIAL_POS)
+        self.simulation.on_letter(self._on_simulation_letter)
         self.held_keys = set()
         ui.keyboard(lambda e: self.keyboard_handler(e))
         ui.timer(1 / FPS, lambda: self._hinterv())
@@ -44,10 +44,10 @@ class PlatformerInputMethod(input_method_proto.IInputMethod):
             self.held_keys.add(evk)
         elif event.action.keyup and evk in self.held_keys:
             self.held_keys.remove(evk)
-        self.physics.set_held_keys(self.held_keys)
+        self.simulation.set_held_keys(self.held_keys)
 
-    def _hphysics_letter_press(self, letter: str) -> None:
-        """Call when the physics engine registers a letter press."""
+    def _on_simulation_letter(self, letter: str) -> None:
+        """Call when the simulation registers a letter press."""
         self.renderer.play_bounce_effect(letter)
         if letter == "<":
             if len(self.input_value) > 0:
@@ -63,8 +63,8 @@ class PlatformerInputMethod(input_method_proto.IInputMethod):
 
     def _hinterv(self) -> None:
         """Run every game tick."""
-        self.physics.tick()
-        self.renderer.move_player(self.physics.player_x, self.physics.player_y)
+        self.simulation.tick()
+        self.renderer.move_player(self.simulation.player_x, self.simulation.player_y)
 
     def on_text_update(self, callback: typing.Callable[[str], None]) -> None:
         """Call `callback` every time the user input changes."""
