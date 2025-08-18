@@ -47,12 +47,3 @@ INPUT_METHODS: list[InputMethodSpec] = [
     },
     {"name": "Platformer", "path": "platformer", "icon": "", "component": PlatformerInputMethod},
 ]
-
-# COLORS
-COLOR_STYLE: dict[str, str] = {
-    "primary": "#12E7B2",
-    "secondary": "#7D53DE",
-    "primary_bg": "#111111",
-    "secondary_bg": "#1B1B1B",
-    "contrast": "#E9E9E9",
-}
