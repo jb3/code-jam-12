@@ -135,6 +135,10 @@ def setup(
     ui.on("disconnect", stop_timer)
 
 
+def create_sentence() -> str:
+    """Create sentence to use in challenge."""
+
+
 async def wpm_tester_page(method: str) -> None:
     """Create the WPM tester page for a given input method."""
     input_method_def = get_input_method_by_name(method)
