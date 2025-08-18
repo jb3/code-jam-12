@@ -24,13 +24,16 @@ class PlatformerRendererComponent(ui.element):
 .platformer-input-method-element.capitalization .tile div {
     text-transform: uppercase;
 }
+.platformer-input-method-element .tile.fade {
+    opacity: 60%;
+}
 .platformer-input-method-element .tile div {
     transform: translateY(-42px);
     text-align: center;
     color: white;
     font-weight: bold;
     font-size: 1.5rem;
-    background-color: #0008;
+    background-color: #0002;
     border-radius: 100%;
 }
 .platformer-input-method-element .tile-bounce {
@@ -85,7 +88,10 @@ class PlatformerRendererComponent(ui.element):
                 for cell in row:
                     if cell in "# ":
                         emoji = EMOJIS["ground"] if cell == "#" else EMOJIS["sky"]
-                        ui.label(emoji).classes("tile")
+                        classes = "tile"
+                        if cell == " ":
+                            classes += " fade"
+                        ui.label(emoji).classes(classes)
                     else:
                         with ui.label(EMOJIS["letter"]).classes("tile"):
                             lb = ui.label(cell.replace("<", "\u232b"))
