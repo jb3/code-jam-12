@@ -3,9 +3,10 @@ from functools import partial
 
 from nicegui import ui
 from nicegui.events import ColorPickEventArguments
+from src.input_method_proto import IInputMethod, TextUpdateCallback
 
 
-class ColorInputManager:
+class ColorInputComponent(IInputMethod):
     """Implements the color-based typing input page.
 
     Allows user to type using the color palette for letters, spaces, and backspaces, and UI buttons/switches for
@@ -15,19 +16,25 @@ class ColorInputManager:
     def __init__(self) -> None:
         # typed_char is input displayed to user based on selected color
         # confirmed_char is character typed after user confirmation
+        self.text_callback: TextUpdateCallback | None = None
         self.typed_text = ""
         self.typed_char = None
         self.confirmed_char = None
         self.selected_color = None
         self.shift_key_on = False
-        self.color_label = ui.label("None")
-        self.input_label = ui.label("None")
-        self.confirm_label = ui.label("None")
-        self.text_label = ui.label("None")
+        (
+            self.color_picker_row,
+            self.color_label,
+            self.input_label,
+            self.command_buttons_row,
+            self.special_char_buttons_row,
+        ) = self.create_ui_content()
+        self.setup_ui_buttons()
+
         self.color_dict = {
             "aqua": "#00FFFF",
             "blue": "#0000FF",
-            "cyan": "#00FFFF",
+            "camouflage": "#3C3910",
             "darkblue": "#00008B",
             "emerald": "00674F",
             "fuchsia": "#FF00FF",
@@ -55,11 +62,15 @@ class ColorInputManager:
             "white": "#FFFFFF",
         }
 
+    def on_text_update(self, callback: TextUpdateCallback) -> None:
+        """Handle callbacks for text updates."""
+        self.text_callback = callback
+
     def special_character_handler(self, char: str) -> None:
         """Handle special character events.
 
         This function handles special characters (e.g. '.', '!', ',', '?'). These characters are input using ui.button
-        elements.
+        elements. Special characters are automatically output to the WPM  page.
         """
         self.selected_color = None
         self.typed_text += char
@@ -71,7 +82,7 @@ class ColorInputManager:
     def confirm_letter_handler(self) -> None:
         """Handle event when user clicks 'Confirm Letter'.
 
-        After user clicks confirm, letter is typed and text displays update.
+        After user clicks confirm, letter is typed and the WPM page updates the text.
         """
         alphabet = string.ascii_letters
         if self.typed_char in alphabet:
@@ -82,9 +93,13 @@ class ColorInputManager:
     def color_handler(self, element: ColorPickEventArguments) -> None:
         """Handle events when user selects a color.
 
-        Identifies closest color in dictionary and maps that color to a text output that is displayed to the user.
+        Identifies closest color in dictionary. Maps that color to a letter or action.
+
         Black maps to backspace and white maps to space. Otherwise, colors map to the first letter of their name in the
         color dictionary.
+
+        Letters must be confirmed by the user before being output to the WPM page. Special characters are automatically
+        output to the WPM page.
         """
         print(type(element))
         selected_color_hex = element.color
@@ -115,27 +130,69 @@ class ColorInputManager:
     def update_helper_text(self) -> None:
         """Update helper text on page.
 
-        Displays the color and current character selected by the user based on an event."
+        Displays the color and (if applicable) current character selected based on the user click."
         """
-        self.color_label.text = f"Color Selected: {self.selected_color}"
-        self.input_label.text = f"Character Selected: {self.typed_char}"
+        self.color_label.text = f"Current Color: {self.selected_color}"
+        self.input_label.text = f"Current Input: {self.typed_char}"
         self.color_label.update()
         self.input_label.update()
 
     def update_confirmation_text(self) -> None:
         """Update confirmed text on page.
 
-        Display the confirmed character selected and all confirmed text typed thus far."
+        Display the confirmed character selected and all confirmed text typed thus far.
 
         """
-        self.confirm_label.text = f"Character Typed: {self.confirmed_char}"
-        self.text_label.text = f"Text Typed: {self.typed_text}"
-        self.confirm_label.update()
-        self.text_label.update()
+        if self.text_callback:
+            self.text_callback(self.typed_text)
+
+    def create_ui_content(self) -> tuple[ui.row, ui.label, ui.label, ui.row, ui.row]:
+        """Create the frame to hold the color picker, text labels, and buttons.
+
+        Returns:
+            tuple: (row for color picker, label for color selected, row for commands, row for special characters)
+
+        """
+        # Couldn't figure out how to position the palette so just stuck it in the page center.
+        # It is on top of the wpm timer currently
+
+        with ui.column().classes("absolute-center"):
+            color_picker_row = ui.row()
+
+        color_label = ui.label("Current Color: None")
+        input_label = ui.label("Current Input:")
+        command_buttons_row = ui.row().style("gap: 10px")
+        special_char_buttons_row = ui.row().style("gap: 10x")
+        return color_picker_row, color_label, input_label, command_buttons_row, special_char_buttons_row
+
+    def setup_ui_buttons(self) -> None:
+        """Create the buttons and other dynamic elements (e.g. labels, switches) on page."""
+        with self.color_picker_row, ui.button(icon="colorize").style("opacity:0;pointer-events:none"):
+            ui.color_picker(on_pick=self.color_handler, value=True).props("persistent")
+
+        with self.command_buttons_row, ui.button_group().classes("gap-10"):
+            ui.switch("CAPS LOCK", on_change=self.shift_handler).classes("bg-blue-500 text-white")
+            ui.button("Confirm Letter", on_click=self.confirm_letter_handler).classes("bg-blue-500 text-white")
+
+        with self.special_char_buttons_row, ui.button_group().classes("gap-10"):
+            # creating wrappers to pass callback functions with parameters to buttons below
+            callback_with_period = partial(self.special_character_handler, ".")
+            callback_with_exclamation = partial(self.special_character_handler, "!")
+            callback_with_comma = partial(self.special_character_handler, ",")
+            callback_with_question_mark = partial(self.special_character_handler, "?")
+
+            ui.button(".", on_click=callback_with_period).classes("bg-blue-500 text-white")
+            ui.button("!", on_click=callback_with_exclamation).classes("bg-blue-500 text-white")
+            ui.button(",", on_click=callback_with_comma).classes("bg-blue-500 text-white")
+            ui.button("?", on_click=callback_with_question_mark).classes("bg-blue-500 text-white")
 
     @ui.page("/color_input")
     def color_input_page(self) -> None:
-        """Create page displaying color_picker, character buttons, and text."""
+        """Create page displaying color_picker, character buttons, and text.
+
+        This method allows the class to create a page separately from the WPM tester
+        and was used for testing the class.
+        """
         with ui.header():
             ui.label("Title text here?")
 
@@ -185,7 +242,7 @@ class ColorInputManager:
         :return: name (string) of the color with the closest hexcode
         """
         color_dists = [
-            (key, ColorInputManager.color_dist(color_hex, self.color_dict[key]), 2) for key in self.color_dict
+            (key, ColorInputComponent.color_dist(color_hex, self.color_dict[key]), 2) for key in self.color_dict
         ]
         color_dists = sorted(color_dists, key=lambda e: e[1])
 
@@ -226,8 +283,8 @@ class ColorInputManager:
         :param color_code2: string representing a color hexcode
         :return: float representing Euclidean distance between colors
         """
-        color_tuple_1 = ColorInputManager.hex_to_rgb(color_code1)
-        color_tuple_2 = ColorInputManager.hex_to_rgb(color_code2)
+        color_tuple_1 = ColorInputComponent.hex_to_rgb(color_code1)
+        color_tuple_2 = ColorInputComponent.hex_to_rgb(color_code2)
 
         red_delta = color_tuple_1["red"] - color_tuple_2["red"]
         green_delta = color_tuple_1["green"] - color_tuple_2["green"]
