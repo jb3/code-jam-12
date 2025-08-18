@@ -66,9 +66,10 @@ class PlatformerRendererComponent(ui.element):
         self.px_player_offset_lx = ((c.SCENE_WIDTH - 1) * c.TILE_SIZE) / 2
         self.px_player_offset_ty = (c.SCENE_HEIGHT * c.TILE_SIZE) - 2 * c.TILE_SIZE
         with self.mask_element:
-            ui.element("div").style(
+            ui.label("\U0001f7e6").style(
                 f"position:absolute;top:{self.px_player_offset_ty}px;left:{self.px_player_offset_lx}px;"
-                f"background-color:{c.COLOR_PLAYER};width:{c.TILE_SIZE}px;height:{c.TILE_SIZE}px"
+                f"width:{c.TILE_SIZE}px;height:{c.TILE_SIZE}px;font-size:{c.TILE_SIZE}px;"
+                "transform: translate(-8px, -6px);"
             )
 
         self.letter_el_map = {}
