@@ -63,11 +63,13 @@ class PlatformerPhysicsSimulation:
 
         delta_accel = self._deltatime * constants.ACCEL_SPEED
 
-        if "ArrowRight" in self._keys:
+        if "ArrowRight" in self._keys or "KeyD" in self._keys:
             self._xvel = min(constants.MOV_SPEED, self._xvel + delta_accel)
-        if "ArrowLeft" in self._keys:
+        if "ArrowLeft" in self._keys or "KeyA" in self._keys:
             self._xvel = max(-constants.MOV_SPEED, self._xvel - delta_accel)
-        if "ArrowUp" in self._keys and self._collides((self.player_x, self.player_y + 2 * EPSILON)):
+        if ("ArrowUp" in self._keys or "KeyW" in self._keys or "Space" in self._keys) and self._collides(
+            (self.player_x, self.player_y + 2 * EPSILON)
+        ):
             self._yvel = -constants.JUMP_FORCE
 
         self._apply_x_velocity()
