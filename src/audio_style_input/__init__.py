@@ -166,7 +166,8 @@ class AudioEditorComponent(IInputMethod):
             self.main_track.play()
             self.on_play()
         else:
-            self.main_track.pause(), self.on_pause()
+            self.main_track.pause()
+            self.on_pause()
 
     def on_play(self) -> None:
         """Start letter spinner and spinning."""
