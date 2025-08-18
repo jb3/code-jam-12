@@ -4,8 +4,10 @@ from typing import override
 from nicegui import ui
 from nicegui.events import KeyEventArguments
 
-import config
+from color_style import ColorStyle
 from input_method_proto import IInputMethod, TextUpdateCallback
+
+COLOR_STYLE = ColorStyle()
 
 
 def wrap_to_range(num: int, num_min: int, num_max: int) -> int:
@@ -72,7 +74,7 @@ class Keyboard(IInputMethod):
         with (
             ui.element("div").classes("w-full h-full flex justify-center items-center"),  # centering div
             ui.element("div").classes(
-                f"w-[85%] h-[60%] bg-[{config.COLOR_STYLE['primary_bg']}] p-5 rounded-xl"
+                f"w-[85%] h-[60%] bg-[{COLOR_STYLE.primary_bg}] p-5 rounded-xl"
             ),  # keyboard outer
             ui.grid(columns=len(KEYBOARD_KEYS[0])).classes("h-full w-full"),  # key grid
         ):
@@ -81,16 +83,16 @@ class Keyboard(IInputMethod):
                     with ui.element("div").classes(  # keys
                         f"w-full h-full flex justify-center items-center border-2 "
                         f"{
-                            'bg-[' + config.COLOR_STYLE['primary'] + ']'
+                            'bg-[' + COLOR_STYLE.primary + ']'
                             if (col_index, row_index) == (self.position.x, self.position.y)
-                            else 'bg-[' + config.COLOR_STYLE['secondary_bg'] + ']'
+                            else 'bg-[' + COLOR_STYLE.secondary_bg + ']'
                         } "
-                        f"border-[{config.COLOR_STYLE['secondary_bg']}] rounded-md"
+                        f"border-[{COLOR_STYLE.secondary_bg}] rounded-md"
                     ):
                         (
                             ui.label(char)
                             .style("font-size: clamp(1rem, 3vh, 3rem)")
-                            .classes(f"text-center text-[{config.COLOR_STYLE['contrast']}] p-2")
+                            .classes(f"text-center text-[{COLOR_STYLE.contrast}] p-2")
                         )
 
     def move(self, x: int, y: int) -> None:

@@ -1,7 +1,9 @@
 from nicegui import ui
 
-import config
 import platformer_input.platformer_constants as c
+from color_style import ColorStyle
+
+COLOR_STYLE = ColorStyle()
 
 EMOJIS = {"sky": "\U0001f600", "ground": "\U0001f61e", "letter": "\U0001f636"}
 
@@ -45,7 +47,7 @@ class PlatformerRendererComponent(ui.element):
         self.classes("platformer-input-method-element flex items-center justify-center")
         with self:
             self.mask_element = ui.element("div").classes(
-                f"rounded-3xl m-4 border-4 border-[{config.COLOR_STYLE['primary']}] border-double "
+                f"rounded-3xl m-4 border-4 border-[{COLOR_STYLE.primary}] border-double "
             )
         self.mask_element.style(
             f"width: {c.TILE_SIZE * c.SCENE_WIDTH}px; height: {c.TILE_SIZE * c.SCENE_HEIGHT}px;"
