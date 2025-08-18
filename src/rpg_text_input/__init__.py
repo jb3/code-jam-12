@@ -48,7 +48,7 @@ KEYBOARD_KEYS: tuple[str, ...] = (
     "ABCDEFGabcdefg",
     "HIJKLMNhijklmn",
     "OPQRSTUopqrstu",
-    "VWXYZ. vwxyz,\N{SYMBOL FOR BACKSPACE}",
+    "VWXYZ. vwxyz!\N{SYMBOL FOR BACKSPACE}",
 )
 
 
