@@ -1,6 +1,7 @@
 import asyncio
 import string
 from pathlib import Path
+from typing import override
 
 from nicegui import app, ui
 
@@ -231,6 +232,7 @@ class AudioEditorComponent(IInputMethod):
         self.intro_card.style("display:none")
         self.main_content.style("display:flex")
 
+    @override
     def on_text_update(self, callback: TextUpdateCallback) -> None:
         """Register a callback to be called whenever the text updates.
 
