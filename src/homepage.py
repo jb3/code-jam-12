@@ -1,6 +1,11 @@
-from nicegui import ui
+from pathlib import Path
+
+from nicegui import app, ui
 
 from config import COLOR_STYLE, INPUT_METHODS, PROJECT_DESCRIPTION, PROJECT_NAME
+
+media = Path("./static")
+app.add_media_files("/media", media)
 
 
 def home() -> None:
