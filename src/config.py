@@ -50,5 +50,5 @@ COLOR_STYLE: dict[str, str] = {
     "secondary": "#7D53DE",
     "primary_bg": "#111111",
     "secondary_bg": "#1B1B1B",
-    "contrast": "#F9F9F9",
+    "contrast": "#E9E9E9",
 }
