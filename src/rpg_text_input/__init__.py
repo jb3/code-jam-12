@@ -4,6 +4,7 @@ from typing import override
 from nicegui import ui
 from nicegui.events import KeyEventArguments
 
+import config
 from input_method_proto import IInputMethod, TextUpdateCallback
 
 
@@ -72,12 +73,29 @@ class Keyboard(IInputMethod):
     @ui.refreshable_method
     def render(self) -> None:
         """Render the keyboard to the page."""
-        with ui.grid(columns=len(KEYBOARD_KEYS[0])):
+        with (
+            ui.element("div").classes("w-full h-full flex justify-center items-center"),  # centering div
+            ui.element("div").classes(
+                f"w-[85%] h-[60%] bg-[{config.COLOR_STYLE['primary_bg']}] p-5 rounded-xl"
+            ),  # keyboard outer
+            ui.grid(columns=len(KEYBOARD_KEYS[0])).classes("h-full w-full"),  # key grid
+        ):
             for row_index, row in enumerate(KEYBOARD_KEYS):
                 for col_index, char in enumerate(row):
-                    label = ui.label(char).style("text-align: center")
-                    if (col_index, row_index) == (self.position.x, self.position.y):
-                        label.style("background-color: lightblue")
+                    with ui.element("div").classes(  # keys
+                        f"w-full h-full flex justify-center items-center border-2 "
+                        f"{
+                            'bg-[' + config.COLOR_STYLE['primary'] + ']'
+                            if (col_index, row_index) == (self.position.x, self.position.y)
+                            else 'bg-[' + config.COLOR_STYLE['secondary_bg'] + ']'
+                        } "
+                        f"border-[{config.COLOR_STYLE['secondary_bg']}] rounded-md"
+                    ):
+                        (
+                            ui.label(char)
+                            .style("font-size: clamp(1rem, 2vh, 2rem)")
+                            .classes(f"text-center font-bold text-[{config.COLOR_STYLE['contrast']}] p-2")
+                        )
 
     def move(self, x: int, y: int) -> None:
         """Move the keyboard selected character in the given directions."""
