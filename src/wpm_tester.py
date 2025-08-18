@@ -49,7 +49,7 @@ def create_header() -> None:
         .style(f"background-color: {COLOR_STYLE['secondary_bg']}")
         .classes("flex items-center justify-between h-[8vh] py-0 px-4")
     ):
-        with ui.element("div").classes("w-[30px] h-auto"):
+        with ui.link(target="/").classes("w-[30px] h-auto"):
             ui.image("/media/images/logo-icon.png")
         (
             ui.link(PROJECT_NAME.upper(), "/")
