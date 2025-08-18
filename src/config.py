@@ -39,12 +39,6 @@ INPUT_METHODS: list[InputMethodSpec] = [
         "icon": "",
         "component": ColorInputComponent,
     },
-    {
-        "name": "Circle Selector",
-        "path": "circle-selector",
-        "icon": "",
-        "component": None,
-    },
     {"name": "Platformer", "path": "platformer", "icon": "", "component": PlatformerInputMethod},
 ]
 
