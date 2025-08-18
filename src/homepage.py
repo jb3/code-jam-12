@@ -1,6 +1,9 @@
 from nicegui import ui
 
-from config import COLOR_STYLE, INPUT_METHODS, PROJECT_DESCRIPTION, PROJECT_NAME
+from color_style import ColorStyle
+from config import INPUT_METHODS, PROJECT_DESCRIPTION, PROJECT_NAME
+
+COLOR_STYLE = ColorStyle()
 
 
 def home() -> None:
@@ -52,29 +55,29 @@ def home() -> None:
     }
     """)
 
-    ui.query("body").style(f"background-color: {COLOR_STYLE['primary_bg']}")
+    ui.query("body").style(f"background-color: {COLOR_STYLE.primary_bg}")
 
     with (
         ui.header(fixed=False)
-        .style(f"background-color: {COLOR_STYLE['secondary_bg']}")
+        .style(f"background-color: {COLOR_STYLE.secondary_bg}")
         .classes("items-center thick-header"),
         ui.column(align_items="center").style("gap: 0px;"),
     ):
-        ui.label(PROJECT_NAME).style(f"color: {COLOR_STYLE['primary']}").classes("site-title")
-        ui.label(PROJECT_DESCRIPTION).style(f"color: {COLOR_STYLE['contrast']}").classes("site-subtitle")
+        ui.label(PROJECT_NAME).style(f"color: {COLOR_STYLE.primary}").classes("site-title")
+        ui.label(PROJECT_DESCRIPTION).style(f"color: {COLOR_STYLE.contrast}").classes("site-subtitle")
 
     with ui.element("div").classes("page-div"):
-        ui.label("CHOOSE YOUR INPUT METHOD").style(f"color: {COLOR_STYLE['secondary']}").classes("heading")
+        ui.label("CHOOSE YOUR INPUT METHOD").style(f"color: {COLOR_STYLE.secondary}").classes("heading")
         ui.separator().style("background-color: #313131;")
         with ui.element("div").classes("button-parent"):
             for input in INPUT_METHODS:
                 (
                     ui.button(
                         text=input["name"],
-                        color=COLOR_STYLE["secondary_bg"],
+                        color=COLOR_STYLE.secondary_bg,
                         on_click=lambda _, path=f"/test/{input['path']}": ui.navigate.to(path),
                     )
-                    .style(f"color: {COLOR_STYLE['contrast']}")
+                    .style(f"color: {COLOR_STYLE.contrast}")
                     .props("rounded")
-                    .classes(f"input-box hover:!bg-[{COLOR_STYLE['primary']}] transition-colors duration-300")
+                    .classes(f"input-box hover:!bg-[{COLOR_STYLE.primary}] transition-colors duration-300")
                 )

@@ -7,7 +7,10 @@ from nicegui import ui
 
 import input_method_proto
 import input_view
-from config import COLOR_STYLE, INPUT_METHODS, PROJECT_NAME
+from color_style import ColorStyle
+from config import INPUT_METHODS, PROJECT_NAME
+
+COLOR_STYLE = ColorStyle()
 
 fake = Faker()
 
@@ -42,14 +45,14 @@ def create_header() -> None:
     # Header
     with (
         ui.header(wrap=False)
-        .style(f"background-color: {COLOR_STYLE['secondary_bg']}")
+        .style(f"background-color: {COLOR_STYLE.secondary_bg}")
         .classes("flex items-center justify-between h-[8vh] py-0 px-4")
     ):
         with ui.card().props("flat"):  # small logo placeholder
             pass
         (
             ui.link(PROJECT_NAME.upper(), "/")
-            .style(f"color: {COLOR_STYLE['primary']}; font-family: Arial, sans-serif; text-decoration: none")
+            .style(f"color: {COLOR_STYLE.primary}; font-family: Arial, sans-serif; text-decoration: none")
             .classes("text-4xl font-bold")
         )
         ui.button(on_click=lambda: right_drawer.toggle(), icon="menu").props("flat color=white")
@@ -57,7 +60,7 @@ def create_header() -> None:
     # Sidebar
     with (
         ui.right_drawer(value=False, fixed=False)
-        .style(f"background-color: {COLOR_STYLE['secondary_bg']}")
+        .style(f"background-color: {COLOR_STYLE.secondary_bg}")
         .props("overlay")
         .classes("p-0") as right_drawer,
         ui.element("q-scroll-area").classes("fit"),
@@ -67,10 +70,10 @@ def create_header() -> None:
             ui.list().classes("fit"),
             ui.item(on_click=lambda: ui.navigate.to("/"))
             .props("clickable")
-            .classes(f"hover:bg-[{COLOR_STYLE['primary']}]"),
+            .classes(f"hover:bg-[{COLOR_STYLE.primary}]"),
             ui.item_section(),
         ):
-            ui.label("HOME").style(f"color: {COLOR_STYLE['contrast']}")
+            ui.label("HOME").style(f"color: {COLOR_STYLE.contrast}")
 
         with ui.list().classes("fit"), ui.column().classes("w-full items-center"):
             ui.separator().style("background-color: #313131; width: 95%;")
@@ -82,10 +85,10 @@ def create_header() -> None:
                 with (
                     ui.item(on_click=lambda _, p=path: ui.navigate.to(p))
                     .props("clickable")
-                    .classes(f"hover:bg-[{COLOR_STYLE['primary']}]"),
+                    .classes(f"hover:bg-[{COLOR_STYLE.primary}]"),
                     ui.item_section(),
                 ):
-                    ui.label(input_method["name"].upper()).style(f"color: {COLOR_STYLE['contrast']}")
+                    ui.label(input_method["name"].upper()).style(f"color: {COLOR_STYLE.contrast}")
 
 
 def create_time_chips() -> tuple[ui.chip, ui.chip, ui.chip]:
@@ -159,11 +162,11 @@ async def wpm_tester_page(method: str) -> None:
     create_header()
 
     # Main body
-    ui.query("body").style(f"background-color: {COLOR_STYLE['primary_bg']};")
+    ui.query("body").style(f"background-color: {COLOR_STYLE.primary_bg};")
 
     with (
         ui.element("div")
-        .style(f"background-color: {COLOR_STYLE['secondary_bg']}")
+        .style(f"background-color: {COLOR_STYLE.secondary_bg}")
         .classes(
             """flex flex-col justify-evenly items-center absolute w-[90vw] h-[85vh] left-1/2 top-1/2
              transform -translate-x-1/2 -translate-y-1/2 rounded-xl"""
