@@ -1,11 +1,15 @@
+import secrets
 import time
 from dataclasses import dataclass
 
+from faker import Faker
 from nicegui import ui
 
 import input_method_proto
 import input_view
 from config import COLOR_STYLE, INPUT_METHODS, PROJECT_NAME
+
+fake = Faker()
 
 
 def get_input_method_by_name(inmth: str) -> type[input_method_proto.IInputMethod] | None:
@@ -135,6 +139,14 @@ def setup(
     ui.on("disconnect", stop_timer)
 
 
+def create_sentence() -> str:
+    """Create sentence to use in challenge."""
+    punctuation = [".", "!"]
+    sentence = fake.sentence(nb_words=6, variable_nb_words=False)
+    sentence[:-1] + secrets.choice(punctuation)
+    return sentence[:-1] + secrets.choice(punctuation)
+
+
 async def wpm_tester_page(method: str) -> None:
     """Create the WPM tester page for a given input method."""
     input_method_def = get_input_method_by_name(method)
@@ -143,7 +155,7 @@ async def wpm_tester_page(method: str) -> None:
         return
 
     state = WpmTesterPageState("")
-    text_to_use = "the quick brown fox jumps over the lazy dog"
+    text_to_use = create_sentence()
 
     create_header()
 
