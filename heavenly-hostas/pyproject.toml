@@ -1,0 +1,62 @@
+[project]
+name = "heavenly-hostas-hosting"
+description = "A little app for the Python Discord Code Jam 12 from the Heavenly Hostas team."
+authors = [
+    { name = "Matiiss", email = "matiiss@matiiss.com" },
+    { name = "PiLogic" },
+    { name = "HiPeople21", email = "hipeople3.14159@gmail.com" },
+    { name = "Sergio Díaz-Esparza" },
+    { name = "Alan Manning" },
+    { name = "Aadil Goyal", email = "aadilgoyal1@gmail.com" },
+]
+version = "0.1.0"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[dependency-groups]
+# This `dev` group contains all the development requirements for our linting toolchain.
+dev = ["pre-commit~=4.2.0", "ruff~=0.12.2"]
+
+[tool.ruff]
+line-length = 119
+target-version = "py312" # Target Python 3.12
+# Automatically fix auto-fixable issues.
+fix = true
+# The directory containing the source code. If you choose a different project layout
+# you will need to update this value.
+src = ["src"] # TODO: fix
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "C901"]
+
+# select = ["ALL"]
+# Ignore some of the most obnoxious linting errors.
+# ignore = [
+#     # Missing docstrings.
+#     "D100",
+#     "D104",
+#     "D105",
+#     "D106",
+#     "D107",
+#     # Docstring whitespace.
+#     "D203",
+#     "D213",
+#     # Docstring punctuation.
+#     "D415",
+#     # Docstring quotes.
+#     "D301",
+#     # Builtins.
+#     "A",
+#     # Print statements.
+#     "T20",
+#     # TODOs.
+#     "TD002",
+#     "TD003",
+#     "FIX",
+#     # Namespace packages.
+#     "INP001",
+# ]
+
+[tool.uv.workspace]
+members = ["packages/backend", "packages/editor", "packages/gallery"]
