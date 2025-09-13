@@ -1,0 +1,70 @@
+[project]
+# This section contains metadata about your project.
+# Don't forget to change the name, description, and authors to match your project!
+name = "Misclick"
+description = '''Why settle for a boring, predictable mouse when you can have pure chaos?
+Misclick is a “wireless mouse” that isn’t really wireless… or a mouse… or particularly useful. Instead of moving your actual cursor, it randomly wanders across the screen, misbehaves on touch, and occasionally copies text just to remind you who’s in charge.
+In short: It’s not the right tool for the job — and that’s the whole point.'''
+authors = [
+    { name = "Sooraj T S"},
+    { name = "Daksh Gakhar"},
+    { name = "SaketKunjathur"},
+    { name = "Vibhakar Solanki"},
+    { name = "Oni Musha"},
+    { name = "Astar-777"}
+
+]
+version = "0.1.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.12,<4.0"
+fastapi = { extras = ["standard"], version = "^0.116.1" }
+qrcode = "^8.2"
+
+[dependency-groups]
+# This `dev` group contains all the development requirements for our linting toolchain.
+# Don't forget to pin your dependencies!
+# This list will have to be migrated if you wish to use another dependency manager.
+dev = [
+    "pre-commit~=4.2.0",
+    "ruff~=0.12.2",
+]
+
+[tool.ruff]
+exclude = ["browser_extension/runtime"]
+# Increase the line length. This breaks PEP8 but it is way easier to work with.
+# The original reason for this limit was a standard vim terminal is only 79 characters,
+# but this doesn't really apply anymore.
+line-length = 119
+# Target Python 3.12. If you decide to use a different version of Python
+# you will need to update this value.
+target-version = "py312"
+# Automatically fix auto-fixable issues.
+fix = true
+
+[tool.ruff.lint]
+select = [
+    "E", # all syntax and formatting errors
+    "F", # Pyflakes checks (undefined names, unused imports)
+    "W", # Warnings like unused variables, redefined names
+
+]
+# Ignore some of the most obnoxious linting errors.
+ignore = [
+    # Docstring whitespace.
+    "D203",
+    "D213",
+    # Docstring punctuation.
+    "D415",
+    # Docstring quotes.
+    "D301",
+    # Builtins.
+    "A",
+    # Print statements.
+    "T20",
+    # TODOs.
+    "TD002",
+    "TD003",
+    "FIX",
+]
