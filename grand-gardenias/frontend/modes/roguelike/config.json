@@ -1,0 +1,20 @@
+{
+  "files": {
+    "../../engine/game.py": "engine/game.py",
+    "../../engine/patterns.py": "engine/patterns.py",
+    "../../engine/controls.py": "engine/controls.py",
+    "../../engine/ui_manager.py": "engine/ui_manager.py",
+    "../../engine/constants.py": "engine/constants.py",
+    "../../engine/objects/block.py": "engine/objects/block.py",
+
+    "./src/game.py": "",
+    "./src/modal.py": "",
+
+    "./src/block_generator.py": "",
+    "./src/question_manager.py": "",
+    "./src/game_state.py": "",
+    "./src/controls.py": "",
+    "./src/problem_helper.py": "",
+    "./src/problems.json": ""
+  }
+}

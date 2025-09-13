@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code Editor - Tetris</title>
+
+  <link rel="stylesheet" href="https://pyscript.net/releases/2025.8.1/core.css">
+  <script type="module" src="https://pyscript.net/releases/2025.8.1/core.js"></script>
+
+  <!-- TailwindCSS -->
+  <link rel="stylesheet" href="../../dist/output.css?v=3">
+
+  <!-- Retro font -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+</head>
+
+<body class="bg-[#111] text-brand flex flex-col h-screen w-full">
+
+  <!-- Loading Screen -->
+  <div id="loading-screen" class="fixed inset-0 bg-[#111] flex items-center justify-center z-[10000]">
+    <div class="bg-black border-2 border-brand p-12 rounded-lg text-center min-w-[300px] retro-shadow">
+      <h1 class="font-retro text-brand mb-5">Tetris Bugs</h1>
+      <div class="w-12 h-12 border-4 border-gray-800 border-t-brand rounded-full mx-auto animate-spin"></div>
+
+      <p class="font-retro mt-5 text-brand">Loading...</p>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal-bg" class="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
+    <div class="bg-black text-brand border border-brand p-16 rounded-lg min-w-[250px] retro-shadow">
+      <div class="font-retro leading-8">
+        Type max 5 characters. <br>
+        press <b>ENTER</b> to spawn a block. <br>
+        Use ⬅️⬇️➡️ to move, <b>SPACE</b> to lock.
+      </div>
+      <button type="submit" id="continue-btn"
+        class="retro-btn w-full mt-4">
+        Continue
+      </button>
+    </div>
+  </div>
+
+  <!-- Top bar -->
+  <div class="w-full font-retro text-white px-4 py-2 flex text-xs items-center">
+    <!-- Files Menu -->
+    <div class="relative group">
+      <button class="px-3 py-1 hover:bg-gray-700">File</button>
+      <div
+        class="absolute left-0 mt-2 w-40 bg-gray-800 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition"
+      >
+        <button
+          id="save-btn2"
+          class="block px-4 py-2 w-full hover:bg-gray-700">
+          Save File
+        </button>
+        <button
+          id="new-file"
+          class="block px-4 py-2 w-full hover:bg-gray-700">
+          New File
+        </button>
+      </div>
+    </div>
+
+    <!-- Editor Menu -->
+    <div class="relative group">
+      <button class="px-3 py-1 hover:bg-gray-700">Edit</button>
+      <div
+        class="absolute left-0 mt-2 w-40 bg-gray-800 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition"
+      >
+        <button id="undo" class="block w-full px-4 py-2 hover:bg-gray-700">Undo</button>
+        <button id="redo" class="block w-full px-4 py-2 hover:bg-gray-700">Redo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Section -->
+  <div class="flex flex-1 justify-center gap-8 pt-4">
+    <!-- Wrapper -->
+    <div id="wrapper" class="flex flex-col items-center justify-center pl-4 flex-1 w-full">
+
+      <!-- Text Bar -->
+      <div class="flex justify-between items-center font-retro w-[839px] mt-5">
+        <input type="text" id="text-input" maxlength="5" placeholder="Type code"
+          class="px-2 py-3 text-white bg-[#111] border border-dashed border-gray-700 rounded" autofocus>
+
+          <div class="flex gap-4">
+            <button type="submit" class="retro-btn text-xs" id="runCodeButton">Run Code</button>
+            <button type="submit" id="save-btn"
+            class="retro-btn text-xs">
+            Export File
+          </button>
+        </div>
+      </div>
+
+      <!-- Grid -->
+      <div id="game"
+          class="grid mt-5 gap-[1px] bg-[#222] text-xs border border-brand-500 retro-shadow"
+          style="
+            grid-template-columns: repeat(40, 20px);
+            grid-template-rows: repeat(20, 20px);
+          ">
+      <!-- Cells will be populated by PyScript -->
+      </div>
+
+    </div>
+
+    <!-- class="bg-green-950 m-6 bg-blend-darken retro-shadow overflow-y-auto pt-1 pl-1" -->
+    <div class="w-full font-retro flex flex-col p-4">
+      <p class="font-retro">Terminal</p>
+      <div id="CodeOutput"
+      class="bg-green-900/30 p-4 overflow-y-auto flex-1">
+      </div>
+    </div>
+
+  </div>
+    <!-- PyScript -->
+    <script type="py" src="./main.py?v=1" config="config.json"></script>
+
+
+  <!-- Button Click Sound Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Create audio element for button sound
+      const buttonSound = new Audio('../../shared/audio/button.wav');
+      buttonSound.volume = 0.5; // Set volume to 50%
+
+      // Function to play button sound
+      function playButtonSound() {
+        // Reset audio to beginning and play
+        buttonSound.currentTime = 0;
+        buttonSound.play().catch(e => console.log('Button sound play failed:', e));
+      }
+
+      // Add click event listener to all buttons
+      document.addEventListener('click', function(event) {
+        // Check if the clicked element is a button or has button-like classes
+        if (event.target.tagName === 'BUTTON' ||
+            event.target.tagName === 'A' ||
+            event.target.classList.contains('retro-btn') ||
+            event.target.classList.contains('retro-btn-secondary') ||
+            event.target.closest('.retro-btn') ||
+            event.target.closest('.retro-btn-secondary')) {
+          playButtonSound();
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
