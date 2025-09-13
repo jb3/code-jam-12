@@ -1,0 +1,29 @@
+# GitHub Action workflow for running pre-commit hooks
+
+name: Run pre-commit hooks
+
+# Trigger the workflow on both push (to the main repository, on the main branch)
+# and pull requests (against the main repository, but from any repo, from any branch).
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+# Brand new concurrency setting! This ensures that not more than one run can be triggered for the same commit.
+# It is useful for pull requests coming from the main repository since both triggers will match.
+concurrency: lint-${{ github.sha }}
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Run pre-commit hooks
+        run: uv run pre-commit run --all-files --show-diff-on-failure
