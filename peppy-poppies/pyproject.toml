@@ -1,0 +1,93 @@
+[project]
+# This section contains metadata about your project.
+# Don't forget to change the name, description, and authors to match your project!
+name = "pycj12-peppy-poppies"
+description = "Add your description here"
+authors = [
+    { name = "Harshal6927" },
+    { name = "i-am-unknown-81514525" },
+    { name = "Ununennium817" },
+    { name = "tayvona" },
+    { name = "fiwam" },
+    { name = "dragonsenseiguy" },
+]
+version = "0.1.0"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[dependency-groups]
+# This `dev` group contains all the development requirements for our linting toolchain.
+# Don't forget to pin your dependencies!
+# This list will have to be migrated if you wish to use another dependency manager.
+dev = ["pre-commit~=4.2.0", "python-dotenv>=1.1.1", "ruff~=0.12.2"]
+frontend = ["panel>=1.7.5", "pyodide-py>=0.27.7", "pyscript>=0.3.3"]
+backend = [
+    "cryptography>=45.0.6",
+    "pyjwt[crypto]>=2.10.1",
+    "advanced-alchemy>=1.4.5",
+    "aiosqlite>=0.21.0",
+    "litestar[standard]>=2.17.0",
+    "python-dotenv>=1.1.1",
+    "pillow>=11.3.0",
+]
+math = ["numpy>=2.3.2", "sympy>=1.14.0"]
+
+[tool.uv]
+default-groups = ["dev", "frontend", "backend", "math"]
+
+[tool.ruff]
+# Increase the line length. This breaks PEP8 but it is way easier to work with.
+# The original reason for this limit was a standard vim terminal is only 79 characters,
+# but this doesn't really apply anymore.
+line-length = 119
+# Target Python 3.12. If you decide to use a different version of Python
+# you will need to update this value.
+target-version = "py312"
+# Automatically fix auto-fixable issues.
+fix = true
+# The directory containing the source code. If you choose a different project layout
+# you will need to update this value.
+src = ["src"]
+extend-exclude = [
+    "js.pyi",
+    "dist/",
+    "frontend/captcha/parse.py",
+] # File from external source for only typehint
+
+[tool.ruff.lint]
+# Enable all linting rules.
+select = ["ALL"]
+# Ignore some of the most obnoxious linting errors.
+ignore = [
+    # Missing docstrings.
+    "D100",
+    "D104",
+    "D105",
+    "D106",
+    "D107",
+    # Docstring whitespace.
+    "D203",
+    "D213",
+    # Docstring punctuation.
+    "D415",
+    # Docstring quotes.
+    "D301",
+    # Builtins.
+    "A",
+    # Print statements.
+    "T20",
+    # TODOs.
+    "TD002",
+    "TD003",
+    "FIX",
+    # Exceptions
+    "TRY003",
+    "EM101",
+    "EM102",
+    # Other
+    "CPY001",
+    "RUF012",
+    "PLR6301",
+    "G004",
+]
