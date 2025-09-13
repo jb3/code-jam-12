@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Social Query Language v1.0</title>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.28.1/full/pyodide.js"></script>
+
+    <link rel="stylesheet" href="web/styles.css" />
+    <link rel="icon" type="image/x-icon" href="web/favicon.png">
+  </head>
+
+  <body class="crt">
+    <div class="screen">
+      <!-- electric feedback when pressing a button -->
+      <div class="electric-wave" id="electric-wave"></div>
+
+      <div class="interface">
+        <div class="title-bar">
+          <span>The Social Query Language v1.0</span>
+          <span>© 1987 Iridescent Ivies</span>
+        </div>
+
+        <div class="window">
+          <div class="content-area">
+            <!-- query input panel -->
+            <div class="query-panel">
+              <div class="panel-header">SQL COMMAND</div>
+              <div class="panel-content">
+                <textarea
+                  class="sql-input"
+                  id="query-input"
+                  placeholder="SELECT username, message, likes FROM posts WHERE likes > 10"
+                ></textarea>
+                <div class="button-row">
+                  <button class="btn" id="execute-btn">EXECUTE</button>
+                  <button class="btn btn-danger" id="cancel-btn">CANCEL</button>
+                  <button class="btn" id="clear-btn">CLEAR</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- results panel -->
+            <div class="results-panel">
+              <div class="panel-header">QUERY RESULTS</div>
+
+              <!-- table container -->
+              <div class="table-area" id="table-container">
+                <table class="data-table" id="results-table">
+                  <thead id="table-head">
+                    <!-- headers will be provided by pyodide -->
+                  </thead>
+                  <tbody id="table-body">
+                    <!-- data rows will be provided by pyodide -->
+                    <tr>
+                      <td
+                        colspan="8"
+                        style="text-align: center; padding: 20px; color: #666"
+                      >
+                        No data loaded. Execute a query to see results.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- status bar -->
+              <div class="status-line">
+                <pre><span id="status-message"></span></pre>
+                <span id="connection-info">Rows: 0 | Status: Waiting</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- loading overlay (hidden by default) -->
+    <div class="loading-overlay" id="loading-overlay">
+      <div class="loading-content">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">EXECUTING QUERY...</div>
+      </div>
+    </div>
+
+    <!-- image modal -->
+    <div class="image-modal" id="image-modal">
+      <div class="modal-container" id="image-modal-container">
+        <div class="modal-header">
+          <span class="modal-title">Image Viewer</span>
+          <span class="modal-close" id="image-modal-close">X</span>
+        </div>
+        <div class="modal-body" id="image-modal-body">
+          <strong id="image-alt-text"></strong>
+          <p id="ascii-display"> </p>
+          <div class="modal-footer">
+            <a id="image-modal-full-link" href="" target="_blank">Open Original</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- bluesky auth modal -->
+    <div class="auth-modal" id="auth-modal">
+      <div class="modal-container">
+        <div class="modal-header">
+          BLUESKY AUTHENTICATION PROTOCOL
+        </div>
+        <div class="modal-body">
+          <div class="auth-title">SECURE LOGIN REQUIRED</div>
+          <div class="auth-subtitle">Enter BlueSky credentials or proceed anonymously</div>
+
+          <form id="auth-form">
+            <div class="form-group">
+              <label class="form-label" for="bluesky-username">USERNAME:</label>
+              <input
+                type="text"
+                id="bluesky-username"
+                name="username"
+                class="form-input"
+                placeholder="your.handle.bsky.social"
+                autocomplete="username"
+              >
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="bluesky-password">PASSWORD:</label>
+              <input
+                type="password"
+                id="bluesky-password"
+                name="password"
+                class="form-input"
+                placeholder="••••••••••••••••"
+                autocomplete="current-password"
+              >
+            </div>
+
+            <div class="button-container">
+              <button type="submit" class="modal-btn btn-primary" id="login-btn">
+                AUTHENTICATE
+              </button>
+              <button type="button" class="modal-btn btn-secondary" id="stealth-btn">
+                STEALTH MODE
+              </button>
+            </div>
+
+            <div class="crt-toggle-container">
+              <button type="button" class="modal-btn btn-crt" id="crt-toggle-btn">
+                CRT EFFECT: ON
+              </button>
+            </div>
+
+            <div class="security-notice" id="security-notice">
+              Your credentials are processed locally and never stored permanently.
+              Stealth mode allows read-only access to public posts.
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="web/boot.js"></script>
+    <script type="text/javascript">
+      const SHOW_BOOT = true; // false to skip boot sequence
+      let pyodide;
+      let pkg;
+      let rand_add = 0;
+
+      window.AppState = {
+        authData: null,
+        isAuthenticated: false,
+        pyodideReady: false
+      };
+
+      async function main() {
+        try {
+          const mainInterface = document.querySelector(".interface");
+          if (mainInterface) {
+            mainInterface.style.opacity = "0";
+          }
+
+          if (SHOW_BOOT) {
+            await window.bootProgress.start();
+          }
+
+          console.log("Starting pyodide load...");
+
+          // load pyodide with progress updates
+          const loadPromise = loadPyodide();
+          if (SHOW_BOOT) {
+            const progressInterval = setInterval(() => {
+              // random progress updates while loading
+              rand_add += 1;
+              const randomProgress = rand_add + 5;
+              window.bootProgress.updateProgress(randomProgress);
+            }, 200);
+
+            pyodide = await loadPromise;
+            clearInterval(progressInterval);
+          } else {
+            pyodide = await loadPromise;
+          }
+
+          console.log("Pyodide loaded successfully");
+          window.pyodide = pyodide;
+
+          if (SHOW_BOOT) {
+            window.bootProgress.pyodideLoaded();
+          }
+
+          console.log("Loading setup script...");
+          await pyodide.loadPackage("micropip")
+
+          if (SHOW_BOOT) {
+            window.bootProgress.updateProgress(15);
+          }
+          await pyodide.runPythonAsync(`
+            from pyodide.http import pyfetch
+            response = await pyfetch("./core/setup.py")
+            with open("setup.py", "wb") as f:
+                f.write(await response.bytes())
+          `);
+
+          if (SHOW_BOOT) {
+            window.bootProgress.updateProgress(25);
+          }
+
+          if (SHOW_BOOT) {
+            window.bootProgress.setupLoaded();
+          }
+
+          // execute setup to load all python modules
+          console.log("Setting up python modules...");
+          if (SHOW_BOOT) {
+            window.bootProgress.updateProgress(35);
+          }
+
+          const setup = pyodide.pyimport("setup");
+
+          if (SHOW_BOOT) {
+            window.bootProgress.updateProgress(50);
+          }
+
+          await setup.setup_pyodide_scripts();
+
+          if (SHOW_BOOT) {
+            window.bootProgress.updateProgress(60);
+          }
+          if (SHOW_BOOT) {
+            window.bootProgress.modulesLoaded();
+          }
+
+          console.log("Loading functions module...");
+          if (SHOW_BOOT) {
+            window.bootProgress.updateProgress(70);
+          }
+
+          await new Promise(resolve => setTimeout(resolve, 300));
+
+          if (SHOW_BOOT) {
+            window.bootProgress.updateProgress(80);
+          }
+
+          pkg = pyodide.pyimport("functions");
+          window.pkg = pkg;
+
+          if (SHOW_BOOT) {
+            window.bootProgress.updateProgress(100);
+          }
+
+          await new Promise(resolve => setTimeout(resolve, 200));
+
+          if (SHOW_BOOT) {
+            window.bootProgress.functionsLoaded();
+          }
+
+          console.log("Python environment ready");
+          window.AppState.pyodideReady = true;
+
+          if (SHOW_BOOT) {
+            window.bootProgress.complete();
+          } else {
+            const auth_modal = pyodide.pyimport("auth_modal");
+            auth_modal.show_auth_modal_after_boot();
+          }
+
+        } catch (error) {
+          console.error("Failed to load pyodide:", error);
+
+          if (SHOW_BOOT) {
+            window.bootProgress.complete();
+          }
+
+          const mainInterface = document.querySelector(".interface");
+          if (mainInterface) {
+            mainInterface.style.opacity = "1";
+          }
+
+          // setup fallback functionality
+          document.getElementById('execute-btn').addEventListener('click', () => {
+            document.getElementById('status-message').textContent = "Python backend not available";
+            document.getElementById('status-message').className = "status-error";
+          });
+        }
+      }
+
+      main();
+    </script>
+  </body>
+</html>
