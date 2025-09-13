@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codejam 2025 Project</title>
+
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.11.1/core.css">
+    <script type="module" src="https://pyscript.net/releases/2024.11.1/core.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+</head>
+<body>
+    <div id="canvasContainer">
+        <canvas id="gameCanvas" tabindex="0"></canvas>
+    </div>
+
+    <div id="loadingLabel">Loading...</div>
+
+    {% for audio_file in audio_list %}
+        <audio src="{{ url_for('static', filename='audio/' ~ audio_file) }}" preload="auto"></audio>
+    {% endfor %}
+
+    <py-script config="{{ url_for('static', filename='pyscript.json') }}">
+        from js import Image, window
+
+        sprites_url = "{{ url_for('static', filename='sprites/') }}"
+
+        window.sprites = {}
+        for sprite in {{ sprite_list }}:
+            # Skip the folder name "asteroid sprites" which would request "asteroid%20sprites.png"
+            if sprite == "asteroid sprites":
+                continue
+            window.sprites[sprite] = Image.new()
+            window.sprites[sprite].src = sprites_url + sprite + ".png"
+
+        window.audio_list = {{ audio_list }}
+
+        window.sprites["asteroids"] = Image.new()
+        window.sprites["asteroids"].src = sprites_url + "asteroids.png"
+
+        window.planets = {{ planets_info|tojson|safe }}
+        for planet in window.planets:
+            planet["spritesheet"] = Image.new()
+            planet["spritesheet"].src = sprites_url + planet["sprite"]
+        
+        window.credits = {{ credits | tojson | safe }}
+
+        window.lore = {{ lore|tojson|safe }}
+
+        # exposing canvas globally (used by Player clamp logic)
+        from js import document
+        window.canvas = document.getElementById('gameCanvas')
+
+        # initialize game scripts
+        from audio import AudioHandler
+        window.audio_handler = AudioHandler("{{ url_for('static', filename='') }}")
+        import game
+    </py-script>
+</body>
+</html>
