@@ -1,0 +1,89 @@
+[project]
+authors = [{ name = "esmecat" }, { name = "floncdev" }, { name = "leoluy" }, { name = "tfblunt" }, { name = "zike01" }]
+description = "This is the project of the Calm Calatheas team for the Python Discord Code Jam 2025"
+name = "calm-calatheas"
+readme = "README.md"
+requires-python = ">=3.13"
+version = "0.0.0"
+
+dependencies = [
+    "accelerate~=1.10",
+    "kernels~=0.9",
+    "pydantic~=2.11",
+    "pydantic-settings~=2.10",
+    "starlette~=0.47",
+    "transformers~=4.55",
+    "torch~=2.6",
+    "uvicorn~=0.35.0",
+]
+
+[dependency-groups]
+dev = [
+    "bitsandbytes~=0.47",
+    "mkdocs~=1.6",
+    "mkdocs-drawio~=1.11",
+    "mkdocs-material~=9.6",
+    "mkdocstrings~=0.29",
+    "mkdocstrings-python~=1.16",
+    "playwright~=1.54",
+    "pre-commit~=4.2",
+    "pydeps~=3.0",
+    "pyodide-py~=0.28",
+    "pyright==1.1.403",
+    "pyscript~=0.3",
+    "pytest~=8.4",
+    "pytest-asyncio~=1.0",
+    "pytest-playwright~=0.7",
+    "pytest-sugar~=1.0",
+    "python-dotenv~=1.1",
+    "reactivex~=4.0",
+    "ruff~=0.12",
+    "taskipy~=1.14",
+    "testcontainers~=4.12",
+]
+
+[tool.pyright]
+exclude = [".venv"]
+pythonVersion = "3.13"
+reportMissingModuleSource = "none"           # Pyodide "js" module is dynamic.
+reportUnnecessaryTypeIgnoreComment = "error"
+typeCheckingMode = "standard"
+venv = ".venv"
+venvPath = "."
+
+[tool.pytest.ini_options]
+addopts = "--browser chromium --browser firefox --browser webkit --tracing retain-on-failure"
+asyncio_default_fixture_loop_scope = "session"
+asyncio_mode = "auto"
+required_plugins = ["pytest-asyncio"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 119
+target-version = "py313"
+
+[tool.ruff.lint]
+ignore = ["D100", "D104", "D105", "D212", "D107", "FIX002", "LOG015", "PT001", "UP007", "UP045", "S311"]
+select = ["ALL"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/conftest.py" = ["INP001"]
+"**/test__*.py" = ["INP001", "S101", "PLR2004"]
+"app/calm_calatheas/services/image_captioner.py" = ["RUF006"]
+"app/frontend/components/description_dropdown.py" = ["SLF001"]
+"app/main.py" = ["INP001"]
+"typings/js.pyi" = ["ALL"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.setuptools]
+packages = ["calm_calatheas"]
+
+[tool.taskipy.tasks]
+build = "uv build"
+build-docker = "task build && docker build . -t calm-calatheas:latest"
+build-docs = "mkdocs build --strict"
+docs = "mkdocs serve"
+serve = "python -m calm_calatheas --log_level DEBUG"
+test = "pytest"

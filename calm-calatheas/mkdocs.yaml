@@ -1,0 +1,116 @@
+copyright: © 2025 Calm Calatheas 🪴
+repo_name: cj12-calm-calatheas/code-jam-12
+repo_url: https://github.com/cj12-calm-calatheas/code-jam-12
+site_name: Pokedexter
+site_url: https://cj12-calm-calatheas.github.io/code-jam-12/
+dev_addr: 127.0.0.1:9000
+
+theme:
+    favicon: assets/logo-16x16.png
+    logo: assets/logo-128x128.png
+    name: material
+    search: true
+
+    features:
+        - content.code.copy
+        - navigation.indexes
+        - navigation.instant
+        - navigation.instant.progress
+        - navigation.path
+        - navigation.sections
+        - navigation.tabs
+        - search.highlight
+
+    icon:
+        repo: fontawesome/brands/github
+
+    palette:
+        - media: "(prefers-color-scheme)"
+          toggle:
+              icon: material/brightness-auto
+              name: Switch to light mode
+        - media: "(prefers-color-scheme: light)"
+          primary: white
+          scheme: default
+          toggle:
+              icon: material/brightness-7
+              name: Switch to dark mode
+        - media: "(prefers-color-scheme: dark)"
+          primary: black
+          scheme: slate
+          toggle:
+              icon: material/brightness-4
+              name: Switch to system preference
+
+markdown_extensions:
+    - admonition
+    - attr_list
+    - codehilite
+    - md_in_html
+    - pymdownx.details
+    - pymdownx.snippets
+    - pymdownx.superfences:
+          custom_fences:
+              - name: mermaid
+                class: mermaid
+                format: !!python/name:pymdownx.superfences.fence_code_format
+    - pymdownx.emoji:
+          emoji_index: !!python/name:material.extensions.emoji.twemoji
+          emoji_generator: !!python/name:material.extensions.emoji.to_svg
+    - pymdownx.snippets
+    - pymdownx.tabbed:
+          alternate_style: true
+    - pymdownx.tasklist:
+          clickable_checkbox: true
+          custom_checkbox: true
+    - toc:
+          permalink: true
+
+nav:
+    - User Guide: user-guide.md
+    - Setup Guide: setup-guide.md
+    - Contributor Guide:
+          - contributor-guide/index.md
+          - Development Environment: contributor-guide/development-environment.md
+          - Version Control: contributor-guide/version-control.md
+          - Documentation: contributor-guide/documentation.md
+    - Design:
+          - design/index.md
+          - Design Goals: design/design-goals.md
+          - System Overview: design/system-overview.md
+          - Web App: design/web-app.md
+          - Backend: design/backend.md
+    - Code:
+          - code/index.md
+          - Frontend: code/frontend.md
+          - Backend: code/backend.md
+
+plugins:
+    - autorefs
+    - drawio
+    - mkdocstrings:
+          handlers:
+              python:
+                  options:
+                      show_root_heading: true
+                      show_object_full_path: false
+                      show_symbol_type_heading: true
+                      show_symbol_type_toc: true
+                      show_signature: true
+                      separate_signature: true
+                      show_signature_annotations: true
+                      signature_crossrefs: true
+                      show_source: false
+                      show_if_no_docstring: true
+                      show_docstring_examples: true
+    - search
+    - tags
+
+extra:
+    generator: false
+    social:
+        - icon: fontawesome/brands/github
+          link: https://github.com/cj12-calm-calatheas/code-jam-12
+
+extra_css:
+    - stylesheets/table.css

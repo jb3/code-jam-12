@@ -1,0 +1,34 @@
+docked = false
+terminal = false
+
+packages = ['pydantic', 'reactivex']
+
+[[fetch]]
+files = [
+    '__init__.py',
+    'app.py',
+    'base/__init__.py',
+    'base/component.py',
+    'base/service.py',
+    'components/__init__.py',
+    'components/camera.py',
+    'components/footer.py',
+    'components/header.py',
+    'components/loading_caption_model.py',
+    'components/pokemon.py',
+    'components/theme.py',
+    'components/description.py',
+    'components/description_dropdown.py',
+    'models/__init__.py',
+    'models/pokemon_description.py',
+    'services/__init__.py',
+    'services/camera.py',
+    'services/caption.py',
+    'services/database.py',
+    'services/description.py',
+    'services/pokemon.py',
+    'services/reader.py',
+    'services/theme.py',
+]
+from = 'frontend'
+to_folder = 'frontend'
