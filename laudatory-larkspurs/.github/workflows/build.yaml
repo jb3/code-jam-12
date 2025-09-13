@@ -1,0 +1,84 @@
+name: Build project and publish
+
+on:
+    push:
+        branches: [main]
+    workflow_dispatch:
+
+concurrency:
+    group: build-${{ github.ref }}
+    cancel-in-progress: true
+
+permissions:
+    contents: write
+
+jobs:
+    build:
+        name: Build the project
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Set up Python
+              uses: actions/setup-python@v5
+              with:
+                  python-version: "3.12"
+
+            - name: Install dependencies
+              run: |
+                  python -m pip install --upgrade pip
+                  pip install .
+
+            - name: Build project
+              run: python build.py
+
+            - name: Upload build artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: build
+                  path: build
+                  if-no-files-found: error
+
+    publish:
+        name: Publish build artifact
+        needs: build
+        runs-on: ubuntu-latest
+        if: github.ref == 'refs/heads/main'
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Configure Git
+              run: |
+                  BOT_NAME="github-actions[bot]"
+                  BOT_EMAIL="41898282+github-actions[bot]@users.noreply.github.com"
+                  git config user.name "$BOT_NAME"
+                  git config user.email "$BOT_EMAIL"
+
+            - name: Prepare build branch
+              run: |
+                  set -e
+                  if git ls-remote --exit-code origin build; then
+                    git fetch origin build:build
+                    git checkout build
+                  else
+                    git checkout --orphan build
+                  fi
+                  find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
+
+            - name: Download build artifact
+              uses: actions/download-artifact@v4
+              with:
+                  name: build
+                  path: .
+
+            - name: Commit build folder
+              run: |
+                  git add .
+                  git diff --cached --quiet && echo "No build changes to commit" || git commit -m "Deploying production from @ ${GITHUB_SHA::7} 🚀"
+                  git push origin build
+
+        timeout-minutes: 15
