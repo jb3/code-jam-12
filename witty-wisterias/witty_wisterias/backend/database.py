@@ -16,7 +16,7 @@ from .exceptions import InvalidResponseError
 HTTP_SESSION = httpx.Client(timeout=30)
 
 # Image Hoster URL and API Endpoints
-HOSTER_URL = "https://freeimghost.net"
+HOSTER_URL = "http://localhost:8001"
 UPLOAD_URL = HOSTER_URL + "/upload"
 JSON_URL = HOSTER_URL + "/json"
 # Search Term used to query for our images (and name our files)
